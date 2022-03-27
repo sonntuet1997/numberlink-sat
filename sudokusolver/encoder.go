@@ -2,6 +2,8 @@ package sudokusolver
 
 import (
 	"github.com/rkkautsar/sudoku-solver/sudoku"
+	"log"
+	"time"
 )
 
 func GenerateCNFConstraints(board *sudoku.Board, algorithm string) CNFInterface {
@@ -39,9 +41,13 @@ func GenerateCNFConstraints(board *sudoku.Board, algorithm string) CNFInterface 
 		exactly1 = cnfExactly1Product
 	}
 	// log.Println("here", cnf.clauseLen())
+	start := time.Now()
 	buildCNFCellConstraints(cnf, exactly1)
 	// log.Println("here", cnf.clauseLen())
 	buildCNFRangeConstraints(cnf, exactly1)
+	elapsed := time.Since(start)
+	log.Printf("Generating Clauses took %s", elapsed)
+
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Rows(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Columns(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Blocks(), cnfExactly1)

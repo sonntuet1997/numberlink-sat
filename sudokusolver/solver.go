@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/crillab/gophersat/explain"
 	"github.com/crillab/gophersat/solver"
@@ -21,8 +22,12 @@ func SolveWithGini(board *sudoku.Board, algorithm string) {
 	//board.BasicSolve()
 	g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
+	start := time.Now()
 	giniAddConstraints(g, cnf.getClauses())
 	giniSolve(g, board)
+	elapsed := time.Since(start)
+	log.Printf("Adding Clauses and Solving took %s", elapsed)
+
 }
 
 func giniAddConstraints(g *gini.Gini, clauses [][]int) {
