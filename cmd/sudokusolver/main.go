@@ -14,30 +14,27 @@ import (
 )
 
 var (
-	isCNFMode    bool
-	isSolveMode  bool
-	isManyMode   bool
-	cpuprofile   string
-	memprofile   string
-	customSolver string
+	isCNFMode bool
+	//isSolveMode  bool
+	//isManyMode bool
+	cpuProfile string
+	memProfile string
+	algorithm  string
 )
 
 func init() {
 	flag.BoolVar(&isCNFMode, "cnf", false, "Generate CNF")
-	flag.BoolVar(&isSolveMode, "solve", true, "Solve with SAT solver")
-	flag.BoolVar(&isManyMode, "many", false, "Solve many one-line 9x9 sudoku w/ gophersat")
-	flag.StringVar(&customSolver, "solver", "gophersat", "Solve with specified SAT solver [implies -solve if set]")
-	flag.StringVar(&cpuprofile, "cpu-profile", "", "Write CPU profile to a file")
-	flag.StringVar(&memprofile, "mem-profile", "", "Write memory profile to a file")
+	//flag.BoolVar(&isSolveMode, "solve", true, "Solve with SAT solver")
+	//flag.BoolVar(&isManyMode, "many", false, "Solve many one-line 9x9 sudoku w/ gophersat")
+	flag.StringVar(&algorithm, "algorithm", "normal", "Normal or Product algorithm")
+	flag.StringVar(&cpuProfile, "cpu-profile", "", "Write CPU profile to a file")
+	flag.StringVar(&memProfile, "mem-profile", "", "Write memory profile to a file")
 	flag.Parse()
 }
 
 func main() {
-	println(isCNFMode, isSolveMode)
-	println(isManyMode, customSolver)
-	println(cpuprofile, memprofile)
-	if cpuprofile != "" {
-		f, err := os.Create(cpuprofile)
+	if cpuProfile != "" {
+		f, err := os.Create(cpuProfile)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -52,21 +49,21 @@ func main() {
 	if isCNFMode {
 		mode = "cnf"
 	}
-	if !isCNFMode && customSolver != "gophersat" {
-		mode = "custom"
-	}
+	//if !isCNFMode && customSolver != "gophersat" {
+	//	mode = "custom"
+	//}
 
-	if isManyMode {
-		// sudokusolver.SolveManyGophersat(os.Stdin, os.Stdout)
-		sudokusolver.SolveManyGini(os.Stdin, os.Stdout)
-	} else {
-		bytes, _ := ioutil.ReadAll(os.Stdin)
-		input := string(bytes)
-		solve(mode, input)
-	}
+	//if isManyMode {
+	//	// sudokusolver.SolveManyGophersat(os.Stdin, os.Stdout)
+	//	sudokusolver.SolveManyGini(os.Stdin, os.Stdout)
+	//} else {
+	bytes, _ := ioutil.ReadAll(os.Stdin)
+	input := string(bytes)
+	solve(mode, algorithm, input)
+	//}
 
-	if memprofile != "" {
-		f, err := os.Create(memprofile)
+	if memProfile != "" {
+		f, err := os.Create(memProfile)
 		if err != nil {
 			log.Fatal("could not create memory profile: ", err)
 		}
@@ -83,11 +80,11 @@ func main() {
 	}
 }
 
-func solve(mode, input string) {
+func solve(mode, algorithm, input string) {
 	board := sudoku.NewFromString(input)
 
 	if mode == "cnf" {
-		cnf := sudokusolver.GenerateCNFConstraints(board)
+		cnf := sudokusolver.GenerateCNFConstraints(board, algorithm)
 		writer := bufio.NewWriter(os.Stdout)
 		cnf.Print(writer)
 		err := writer.Flush()
@@ -98,11 +95,7 @@ func solve(mode, input string) {
 	}
 
 	if mode == "solve" {
-		sudokusolver.SolveWithGini(board)
-	}
-
-	if mode == "custom" {
-		sudokusolver.SolveWithCustomSolver(board, customSolver)
+		sudokusolver.SolveWithGini(board, algorithm)
 	}
 
 	board.Print(os.Stdout)

@@ -42,18 +42,21 @@ func New(size int) *Board {
 		NumCandidates: len(candidates) - 1,
 	}
 
+	// determine block index of cells
 	for r := 0; r < size2; r++ {
 		for c := 0; c < size2; c++ {
 			blkIdxMap[r*size2+c] = r/size*size + c/size
 		}
 	}
 
+	// keep track numbers left in each row, column, block
 	for i := 0; i < len(rowCandidateCount); i++ {
 		rowCandidateCount[i] = size2
 		colCandidateCount[i] = size2
 		blkCandidateCount[i] = size2
 	}
 
+	//keep track all possible value of each cell
 	for i := 1; i < len(candidates); i++ {
 		candidates[i] = true
 	}
@@ -97,14 +100,14 @@ func (b *Board) SetValue(row, col, val int) {
 func (b *Board) SetValueFalse(row, col, val int) {
 	blkIndex := b.blkIdxMap[b.Idx(row, col)]
 	lit := b.Lit(row, col, val)
-	prev := b.Candidates[lit]
-	b.Candidates[lit] = false
-	if prev {
-		b.NumCandidates--
-		b.rowCandidateCount[row*b.Size2+val-1] -= 1
-		b.colCandidateCount[col*b.Size2+val-1] -= 1
-		b.blkCandidateCount[blkIndex*b.Size2+val-1] -= 1
+	if b.Candidates[lit] {
+		return
 	}
+	b.Candidates[lit] = false
+	b.NumCandidates--
+	b.rowCandidateCount[row*b.Size2+val-1] -= 1
+	b.colCandidateCount[col*b.Size2+val-1] -= 1
+	b.blkCandidateCount[blkIndex*b.Size2+val-1] -= 1
 }
 
 func (b *Board) BasicSolve() {
@@ -123,7 +126,6 @@ func (b *Board) NakedSingles() bool {
 			if b.Lookup[b.Idx(r, c)] != 0 {
 				continue
 			}
-
 			// naked singles
 			last := 0
 			for v := 1; v <= b.Size2; v++ {
@@ -239,17 +241,18 @@ func min(a, b int) int {
 	return b
 }
 
-// 1-indexed
+// Lit 1-indexed
+// Cell candidate values
 func (b *Board) Lit(row, col, val int) int {
 	return 1 + b.Idx(row, col)*b.Size2 + (val - 1)
 }
 
-// 1-indexed
+// CLit 1-indexed
 func (b *Board) CLit(row, col, val int) int {
 	return b.lit_cLit[b.Lit(row, col, val)]
 }
 
-// 0-indexed
+// Idx 0-indexed
 func (b *Board) Idx(row, col int) int {
 	return row*b.Size2 + col
 }

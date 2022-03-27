@@ -128,6 +128,16 @@ func (c *CNF) Print(w io.Writer) {
 	}
 }
 
+func (c *CNF) initializeLits() {
+	b := c.getBoard()
+	c.lits = make([]int, 0, len(b.Candidates)-b.NumCandidates)
+	for i := 0; i < len(b.Lookup); i++ {
+		if b.Lookup[i] != 0 {
+			c.addLit(b.CLit(i/b.Size2, i%b.Size2, b.Lookup[i]))
+		}
+	}
+}
+
 func getLitLookupIdx(lit int) int {
 	if lit < 0 {
 		return -lit - 1

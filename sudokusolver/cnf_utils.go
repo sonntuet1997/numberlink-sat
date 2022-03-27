@@ -1,5 +1,7 @@
 package sudokusolver
 
+import "math"
+
 func cnfAtLeast1(c CNFInterface, lits []int) [][]int {
 	return [][]int{lits}
 }
@@ -29,6 +31,15 @@ func cnfExactly1(c CNFInterface, lits []int) [][]int {
 	return append(cnfAtMost1(c, lits), cnfAtLeast1(c, lits)...)
 }
 
+func cnfExactly1Product(c CNFInterface, lits []int) [][]int {
+	if len(lits) == 1 {
+		c.addLit(lits[0])
+		return [][]int{}
+	}
+
+	return append(cnfAtMost1Product(c, lits), cnfAtLeast1(c, lits)...)
+}
+
 func cnfAtMost1Pairwise(c CNFInterface, lits []int) [][]int {
 	n := len(lits)
 	result := make([][]int, 0, n*n/2)
@@ -51,7 +62,9 @@ func cnfAtMost1Commander(c CNFInterface, lits []int) [][]int {
 		return _cnfAtMost1(c, lits, true)
 	}
 	m := (n + COMMANDER_FACTOR - 1) / COMMANDER_FACTOR
+
 	groupLen := (n + m - 1) / m
+
 	result := make([][]int, 0, n*m)
 
 	groups := make([][]int, m)
@@ -75,7 +88,6 @@ func cnfAtMost1Commander(c CNFInterface, lits []int) [][]int {
 	// 3. Exactly one of the commander variables is true
 	result = append(result, cnfAtLeast1(c, commanders)...)
 	result = append(result, cnfAtMost1Commander(c, commanders)...)
-
 	return result
 }
 
@@ -135,4 +147,45 @@ func makeRange(min, max int) []int {
 		a[i] = min + i
 	}
 	return a
+}
+
+func cnfAtMost1Product(c CNFInterface, lits []int) [][]int {
+	n := len(lits)
+	row := int(math.Ceil(math.Sqrt(float64(n))))
+	column := int(math.Ceil(float64(n) / float64(row)))
+	result := make([][]int, 0, _factor(row)+_factor(column)+n*2)
+	rowVars := c.requestLiterals(row)
+	// r1 ->  -r2 ^ r1 -> -r3...
+	for i := 0; i < row; i++ {
+		for j := i + 1; j < row; j++ {
+			result = append(result, []int{-rowVars[i], -rowVars[j]})
+		}
+	}
+
+	colVars := c.requestLiterals(column)
+
+	// c1 ->  -c2 ^ c1 -> -c3...
+	for i := 0; i < column; i++ {
+		for j := i + 1; j < column; j++ {
+			result = append(result, []int{-colVars[i], -colVars[j]})
+		}
+	}
+
+	// c1 ->  -c2 ^ c1 -> -c3...
+	for i := 0; i < row; i++ {
+		for j := 0; j < column; j++ {
+			result = append(result, []int{-lits[i*row+j], rowVars[i]})
+			result = append(result, []int{-lits[i*row+j], colVars[j]})
+		}
+	}
+
+	return result
+}
+
+func _factor(n int) int {
+	result := 1
+	for i := 2; i <= n; i++ {
+		result *= i
+	}
+	return result
 }

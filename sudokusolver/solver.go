@@ -17,17 +17,10 @@ import (
 	"github.com/rkkautsar/sudoku-solver/sudoku"
 )
 
-func SolveWithGophersat(board *sudoku.Board) {
-	board.BasicSolve()
-	cnf := GenerateCNFConstraints(board)
-	pb := solver.ParseSlice(cnf.getClauses())
-	solvePbWithGophersat(board, pb)
-}
-
-func SolveWithGini(board *sudoku.Board) {
-	board.BasicSolve()
+func SolveWithGini(board *sudoku.Board, algorithm string) {
+	//board.BasicSolve()
 	g := gini.New()
-	cnf := GenerateCNFConstraints(board)
+	cnf := GenerateCNFConstraints(board, algorithm)
 	giniAddConstraints(g, cnf.getClauses())
 	giniSolve(g, board)
 }
@@ -56,23 +49,10 @@ func giniSolve(g *gini.Gini, board *sudoku.Board) {
 	for i := 1; i <= len(model); i++ {
 		model[i-1] = g.Value(z.Dimacs2Lit(i))
 	}
-	// log.Println(model)
 	board.SolveWithModel(model)
 }
 
-func solvePbWithGophersat(board *sudoku.Board, pb *solver.Problem) {
-	s := solver.New(pb)
-	status := s.Solve()
-
-	if status == solver.Unsat {
-		ExplainUnsat(pb)
-		return
-	}
-
-	board.SolveWithModel(s.Model())
-}
-
-func SolveWithCustomSolver(board *sudoku.Board, solver string) {
+func SolveWithCustomSolver(board *sudoku.Board, solver, algorithm string) {
 	solverArgs := strings.Split(solver, " ")
 	cmd := exec.Command(solverArgs[0], solverArgs[1:]...)
 	stdin, _ := cmd.StdinPipe()
@@ -83,7 +63,7 @@ func SolveWithCustomSolver(board *sudoku.Board, solver string) {
 	cmd.Start()
 	defer cmd.Wait()
 	board.BasicSolve()
-	cnf := GenerateCNFConstraints(board)
+	cnf := GenerateCNFConstraints(board, algorithm)
 	cnf.Print(writer)
 	writer.Flush()
 	stdin.Close()
@@ -141,24 +121,7 @@ func ExplainUnsat(pb *solver.Problem) {
 	fmt.Println(musCnf)
 }
 
-// only support gophersat since otherwise it has the overhead of spawning subproc
-func SolveManyGophersat(in io.Reader, out io.Writer) {
-	scanner := bufio.NewScanner(in)
-	writer := bufio.NewWriter(out)
-	base := GetBase9x9Clauses()
-	board := base.Board
-
-	for scanner.Scan() {
-		input := scanner.Text()
-		board.ReplaceWithSingleRowString(input, false)
-		board.BasicSolve()
-		SolveWithGophersatAndBase(board, base)
-		board.PrintOneLine(writer)
-	}
-	writer.Flush()
-}
-
-func SolveManyGini(in io.Reader, out io.Writer) {
+func SolveManyGini(in io.Reader, out io.Writer, algorithm string) {
 	scanner := bufio.NewScanner(in)
 	writer := bufio.NewWriter(out)
 	// base := GetBase9x9Clauses()
@@ -222,25 +185,8 @@ func SolveManyGini(in io.Reader, out io.Writer) {
 		// log.Println("end")
 
 		board.ReplaceWithSingleRowString(input, false)
-		SolveWithGini(board)
+		SolveWithGini(board, algorithm)
 		board.PrintOneLine(writer)
 	}
 	writer.Flush()
-}
-
-func GetBase9x9Clauses() *CNF {
-	board := sudoku.New(3)
-	cnf := GenerateCNFConstraints(board)
-	return cnf.(*CNF)
-}
-
-func SolveWithGophersatAndBase(board *sudoku.Board, base *CNF) {
-	clauses := make([][]int, len(base.Clauses))
-	copy(clauses, base.Clauses)
-
-	cnf := &CNF{Board: board, Clauses: clauses, nbVar: base.nbVar}
-	cnf.lits = append(cnf.lits, base.lits...)
-	// cnf.Simplify(SimplifyOptions{disablePureLiteralElimination: false})
-	pb := solver.ParseSlice(cnf.Clauses)
-	solvePbWithGophersat(board, pb)
 }

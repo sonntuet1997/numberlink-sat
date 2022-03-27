@@ -15,3 +15,11 @@ benchprofile:
 
 profile: build
 	./bin/sudokusolver -cpu-profile=cpu.prof -mem-profile=mem.prof ${ARGS}
+
+help:
+	go run ./cmd/sudokusolver/main.go -help
+	
+run:
+	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS}
+cnf:
+	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true ${ARGS}

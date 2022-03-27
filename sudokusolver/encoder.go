@@ -4,16 +4,16 @@ import (
 	"github.com/rkkautsar/sudoku-solver/sudoku"
 )
 
-func GenerateCNFConstraints(s *sudoku.Board) CNFInterface {
+func GenerateCNFConstraints(board *sudoku.Board, algorithm string) CNFInterface {
 	var cnf CNFInterface
 
-	s.InitCompressedLits()
+	board.InitCompressedLits()
 
 	shouldUseParallel := false
 
 	cnf = &CNF{
-		Board:   s,
-		Clauses: make([][]int, 0, s.Size2*s.Size2*s.Size2*3),
+		Board:   board,
+		Clauses: make([][]int, 0, board.Size2*board.Size2*board.Size2*3),
 	}
 
 	if shouldUseParallel {
@@ -22,9 +22,9 @@ func GenerateCNFConstraints(s *sudoku.Board) CNFInterface {
 		}
 	}
 
-	// log.Println("known", s.Size2*s.Size2*s.Size2-s.NumCandidates)
-	// log.Println("unknown", s.NumCandidates)
-	cnf.setInitialNbVar(s.NumCandidates)
+	// log.Println("known", board.Size2*board.Size2*board.Size2-board.NumCandidates)
+	// log.Println("unknown", board.NumCandidates)
+	cnf.setInitialNbVar(board.NumCandidates)
 	cnf.initializeLits()
 
 	// var b bytes.Buffer
@@ -34,12 +34,14 @@ func GenerateCNFConstraints(s *sudoku.Board) CNFInterface {
 	if shouldUseParallel {
 		cnf.(*CNFParallel).initWorkers()
 	}
-
+	exactly1 := cnfExactly1
+	if algorithm == "product" {
+		exactly1 = cnfExactly1Product
+	}
 	// log.Println("here", cnf.clauseLen())
-	buildCNFCellConstraints(cnf, cnfExactly1)
+	buildCNFCellConstraints(cnf, exactly1)
 	// log.Println("here", cnf.clauseLen())
-	buildCNFRangeConstraints(cnf, cnfExactly1)
-	// log.Println("here", cnf.clauseLen())
+	buildCNFRangeConstraints(cnf, exactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Rows(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Columns(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Blocks(), cnfExactly1)
@@ -48,21 +50,11 @@ func GenerateCNFConstraints(s *sudoku.Board) CNFInterface {
 		cnf.(*CNFParallel).closeAndWait()
 	}
 
-	// if s.Size > 6 {
+	// if board.Size > 6 {
 	// 	cnf.Simplify(SimplifyOptions{})
 	// }
 
 	return cnf
-}
-
-func (c *CNF) initializeLits() {
-	b := c.getBoard()
-	c.lits = make([]int, 0, len(b.Candidates)-b.NumCandidates)
-	for i := 0; i < len(b.Lookup); i++ {
-		if b.Lookup[i] != 0 {
-			c.addLit(b.CLit(i/b.Size2, i%b.Size2, b.Lookup[i]))
-		}
-	}
 }
 
 func (c *CNFParallel) initializeLits() {
@@ -83,7 +75,6 @@ func buildCNFCellConstraints(cnf CNFInterface, builder CNFBuilder) {
 			for v := 1; v <= b.Size2; v++ {
 				lits[v-1] = b.CLit(r, c, v)
 			}
-			// log.Println("cell", r, c)
 			cnf.addFormula(filterZero(lits), builder)
 		}
 	}
