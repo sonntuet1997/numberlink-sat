@@ -20,6 +20,7 @@ type CNFInterface interface {
 	getLits() []int
 	getClauses() [][]int
 	clauseLen() int
+	varLen() int
 	Simplify(SimplifyOptions)
 	Print(w io.Writer)
 }
@@ -84,6 +85,9 @@ func (c *CNF) requestLiterals(num int) []int {
 func (c *CNF) setInitialNbVar(nbVar int) {
 	c.nbVar = int32(nbVar)
 	c.lookupLen = nbVar
+}
+func (c *CNF) varLen() int {
+	return int(c.nbVar)
 }
 
 func (c *CNF) addClause(clause []int) {

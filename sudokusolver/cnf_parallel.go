@@ -54,6 +54,9 @@ func (c *CNFParallel) getBoard() *sudoku.Board {
 func (c *CNFParallel) getLits() []int {
 	return c.CNF.getLits()
 }
+func (c *CNFParallel) varLen() int {
+	return int(c.nbVar)
+}
 
 func (c *CNFParallel) getClauses() [][]int {
 	return c.CNF.getClauses()

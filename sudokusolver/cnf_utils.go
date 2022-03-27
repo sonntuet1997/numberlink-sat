@@ -11,15 +11,16 @@ func cnfAtMost1(c CNFInterface, lits []int) [][]int {
 }
 
 func _cnfAtMost1(c CNFInterface, lits []int, pairwise bool) [][]int {
-	if pairwise || len(lits) <= 5 {
-		return cnfAtMost1Pairwise(c, lits)
-	}
+	//if pairwise || len(lits) <= 5 {
+	//	return cnfAtMost1Pairwise(c, lits)
+	//}
+	//
+	//if len(lits) <= 10 {
+	//	return cnfAtMost1Commander(c, lits)
+	//}
+	return cnfAtMost1Pairwise(c, lits)
 
-	if len(lits) <= 10 {
-		return cnfAtMost1Commander(c, lits)
-	}
-
-	return cnfAtMost1Bimander(c, lits)
+	//return cnfAtMost1Bimander(c, lits)
 }
 
 func cnfExactly1(c CNFInterface, lits []int) [][]int {
