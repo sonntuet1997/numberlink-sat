@@ -21,5 +21,10 @@ help:
 	
 run:
 	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS}
+	
+run-product:
+	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -algorithm=product
 cnf:
 	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true ${ARGS}
+cnf-product:
+	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true -algorithm=product
