@@ -175,8 +175,11 @@ func cnfAtMost1Product(c CNFInterface, lits []int) [][]int {
 	// c1 ->  -c2 ^ c1 -> -c3...
 	for i := 0; i < row; i++ {
 		for j := 0; j < column; j++ {
-			result = append(result, []int{-lits[i*row+j], rowVars[i]})
-			result = append(result, []int{-lits[i*row+j], colVars[j]})
+			if i*column+j >= len(lits) {
+				break
+			}
+			result = append(result, []int{-lits[i*column+j], rowVars[i]})
+			result = append(result, []int{-lits[i*column+j], colVars[j]})
 		}
 	}
 

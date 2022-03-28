@@ -19,7 +19,8 @@ import (
 )
 
 func SolveWithGini(board *sudoku.Board, algorithm string) {
-	//board.BasicSolve()
+	log.Println("sdadassdadsa")
+	board.BasicSolve()
 	g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
 	start := time.Now()

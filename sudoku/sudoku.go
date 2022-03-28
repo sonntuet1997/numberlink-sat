@@ -100,14 +100,14 @@ func (b *Board) SetValue(row, col, val int) {
 func (b *Board) SetValueFalse(row, col, val int) {
 	blkIndex := b.blkIdxMap[b.Idx(row, col)]
 	lit := b.Lit(row, col, val)
-	if b.Candidates[lit] {
-		return
-	}
+	prev := b.Candidates[lit]
 	b.Candidates[lit] = false
-	b.NumCandidates--
-	b.rowCandidateCount[row*b.Size2+val-1] -= 1
-	b.colCandidateCount[col*b.Size2+val-1] -= 1
-	b.blkCandidateCount[blkIndex*b.Size2+val-1] -= 1
+	if prev {
+		b.NumCandidates--
+		b.rowCandidateCount[row*b.Size2+val-1] -= 1
+		b.colCandidateCount[col*b.Size2+val-1] -= 1
+		b.blkCandidateCount[blkIndex*b.Size2+val-1] -= 1
+	}
 }
 
 func (b *Board) BasicSolve() {

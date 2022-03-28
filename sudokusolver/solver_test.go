@@ -111,14 +111,15 @@ func BenchmarkSolve25x25WithProductEncoding(b *testing.B) {
 	}
 }
 
-func BenchmarkSolve64x64(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
+//
+//func BenchmarkSolve64x64(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
 func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
 	input := string(bytes)
@@ -146,15 +147,15 @@ func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 //		solveOneLiner(input, "product")
 //	}
 //}
-
-func BenchmarkSolve81x81(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
+//
+//func BenchmarkSolve81x81(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
 func BenchmarkSolve81x81WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
 	input := string(bytes)
@@ -164,14 +165,15 @@ func BenchmarkSolve81x81WithProductEncoding(b *testing.B) {
 	}
 }
 
-func BenchmarkSolve100x100(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
+//
+//func BenchmarkSolve100x100(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
 func BenchmarkSolve100x100WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
 	input := string(bytes)
@@ -181,14 +183,15 @@ func BenchmarkSolve100x100WithProductEncoding(b *testing.B) {
 	}
 }
 
-func BenchmarkSolve144x144(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
+//
+//func BenchmarkSolve144x144(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
 func BenchmarkSolve144x144WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
 	input := string(bytes)
@@ -198,14 +201,15 @@ func BenchmarkSolve144x144WithProductEncoding(b *testing.B) {
 	}
 }
 
-func BenchmarkSolve225x225(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
+//
+//func BenchmarkSolve225x225(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
 func BenchmarkSolve225x225WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
 	input := string(bytes)
