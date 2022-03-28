@@ -3,6 +3,8 @@ package sudokusolver_test
 import (
 	"bytes"
 	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"testing"
 
@@ -27,12 +29,11 @@ var hard17clue = [...]string{
 	"693784512487512936125963874932651487568247391741398625319475268856129743274836159",
 }
 
-//
-//func TestMain(m *testing.M) {
-//	log.SetOutput(ioutil.Discard)
-//	os.Exit(m.Run())
-//}
-//
+func TestMain(m *testing.M) {
+	log.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
+
 //func TestSolveAiEscargot(t *testing.T) {
 //	solution := solveOneLiner(aiEscargot[0], "normal")
 //	assert.Equal(t, aiEscargot[1], solution)
