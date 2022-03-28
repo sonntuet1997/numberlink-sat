@@ -3,14 +3,11 @@ package sudokusolver_test
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/rkkautsar/sudoku-solver/sudoku"
 	"github.com/rkkautsar/sudoku-solver/sudokusolver"
-	"github.com/stretchr/testify/assert"
 )
 
 const CUSTOM_SOLVER = "cadical -q"
@@ -30,37 +27,38 @@ var hard17clue = [...]string{
 	"693784512487512936125963874932651487568247391741398625319475268856129743274836159",
 }
 
-func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
-	os.Exit(m.Run())
-}
-
-func TestSolveAiEscargot(t *testing.T) {
-	solution := solveOneLiner(aiEscargot[0], "normal")
-	assert.Equal(t, aiEscargot[1], solution)
-}
-func TestSolveAiEscargotWithProductEncoding(t *testing.T) {
-	solution := solveOneLiner(aiEscargot[0], "product")
-	assert.Equal(t, aiEscargot[1], solution)
-}
-
-func TestSolveHard1(t *testing.T) {
-	solution := solveOneLiner(hard1[0], "normal")
-	assert.Equal(t, hard1[1], solution)
-}
-func TestSolveHard1WithProductEncoding(t *testing.T) {
-	solution := solveOneLiner(hard1[0], "product")
-	assert.Equal(t, hard1[1], solution)
-}
-
-func TestSolveHard17clue(t *testing.T) {
-	solution := solveOneLiner(hard17clue[0], "normal")
-	assert.Equal(t, hard17clue[1], solution)
-}
-func TestSolveHard17clueWithProductEncoding(t *testing.T) {
-	solution := solveOneLiner(hard17clue[0], "product")
-	assert.Equal(t, hard17clue[1], solution)
-}
+//
+//func TestMain(m *testing.M) {
+//	log.SetOutput(ioutil.Discard)
+//	os.Exit(m.Run())
+//}
+//
+//func TestSolveAiEscargot(t *testing.T) {
+//	solution := solveOneLiner(aiEscargot[0], "normal")
+//	assert.Equal(t, aiEscargot[1], solution)
+//}
+//func TestSolveAiEscargotWithProductEncoding(t *testing.T) {
+//	solution := solveOneLiner(aiEscargot[0], "product")
+//	assert.Equal(t, aiEscargot[1], solution)
+//}
+//
+//func TestSolveHard1(t *testing.T) {
+//	solution := solveOneLiner(hard1[0], "normal")
+//	assert.Equal(t, hard1[1], solution)
+//}
+//func TestSolveHard1WithProductEncoding(t *testing.T) {
+//	solution := solveOneLiner(hard1[0], "product")
+//	assert.Equal(t, hard1[1], solution)
+//}
+//
+//func TestSolveHard17clue(t *testing.T) {
+//	solution := solveOneLiner(hard17clue[0], "normal")
+//	assert.Equal(t, hard17clue[1], solution)
+//}
+//func TestSolveHard17clueWithProductEncoding(t *testing.T) {
+//	solution := solveOneLiner(hard17clue[0], "product")
+//	assert.Equal(t, hard17clue[1], solution)
+//}
 
 func BenchmarkSolveAiEscargot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
@@ -129,23 +127,24 @@ func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 	}
 }
 
-//TLE (>11m)
-func BenchmarkSolve64x64Hard(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-64-1.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "normal")
-	}
-}
-func BenchmarkSolve64x64HardWithProductEncoding(b *testing.B) {
-	bytes, _ := ioutil.ReadFile("../data/sudoku-64-1.txt")
-	input := string(bytes)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		solveOneLiner(input, "product")
-	}
-}
+//
+////TLE (>11m)
+//func BenchmarkSolve64x64Hard(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-64-1.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "normal")
+//	}
+//}
+//func BenchmarkSolve64x64HardWithProductEncoding(b *testing.B) {
+//	bytes, _ := ioutil.ReadFile("../data/sudoku-64-1.txt")
+//	input := string(bytes)
+//	b.ResetTimer()
+//	for i := 0; i < b.N; i++ {
+//		solveOneLiner(input, "product")
+//	}
+//}
 
 func BenchmarkSolve81x81(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
