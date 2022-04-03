@@ -3,7 +3,6 @@ package sudokusolver_test
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"testing"
@@ -30,35 +29,35 @@ var hard17clue = [...]string{
 }
 
 func TestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
+	//log.SetOutput(ioutil.Discard)
 	os.Exit(m.Run())
 }
 
 //func TestSolveAiEscargot(t *testing.T) {
-//	solution := solveOneLiner(aiEscargot[0], "normal")
-//	assert.Equal(t, aiEscargot[1], solution)
+//	solution := cnfOneLiner(aiEscargot1[0], "normal")
+//	assert.Equal(t, aiEscargot1[1], solution)
 //}
 //func TestSolveAiEscargotWithProductEncoding(t *testing.T) {
-//	solution := solveOneLiner(aiEscargot[0], "product")
-//	assert.Equal(t, aiEscargot[1], solution)
+//	solution := cnfOneLiner(aiEscargot1[0], "product")
+//	assert.Equal(t, aiEscargot1[1], solution)
 //}
 //
 //func TestSolveHard1(t *testing.T) {
-//	solution := solveOneLiner(hard1[0], "normal")
-//	assert.Equal(t, hard1[1], solution)
+//	solution := cnfOneLiner(hard11[0], "normal")
+//	assert.Equal(t, hard11[1], solution)
 //}
 //func TestSolveHard1WithProductEncoding(t *testing.T) {
-//	solution := solveOneLiner(hard1[0], "product")
-//	assert.Equal(t, hard1[1], solution)
+//	solution := cnfOneLiner(hard11[0], "product")
+//	assert.Equal(t, hard11[1], solution)
 //}
 //
 //func TestSolveHard17clue(t *testing.T) {
-//	solution := solveOneLiner(hard17clue[0], "normal")
-//	assert.Equal(t, hard17clue[1], solution)
+//	solution := cnfOneLiner(hard17clue1[0], "normal")
+//	assert.Equal(t, hard17clue1[1], solution)
 //}
 //func TestSolveHard17clueWithProductEncoding(t *testing.T) {
-//	solution := solveOneLiner(hard17clue[0], "product")
-//	assert.Equal(t, hard17clue[1], solution)
+//	solution := cnfOneLiner(hard17clue1[0], "product")
+//	assert.Equal(t, hard17clue1[1], solution)
 //}
 
 func BenchmarkSolveAiEscargot(b *testing.B) {
@@ -111,15 +110,14 @@ func BenchmarkSolve25x25WithProductEncoding(b *testing.B) {
 	}
 }
 
-//
-//func BenchmarkSolve64x64(b *testing.B) {
-//	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
-//	input := string(bytes)
-//	b.ResetTimer()
-//	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
-//	}
-//}
+func BenchmarkSolve64x64(b *testing.B) {
+	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
+	input := string(bytes)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		solveOneLiner(input, "normal")
+	}
+}
 func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-64-2.txt")
 	input := string(bytes)
@@ -136,7 +134,7 @@ func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 //	input := string(bytes)
 //	b.ResetTimer()
 //	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
+//		cnfOneLiner(input, "normal")
 //	}
 //}
 //func BenchmarkSolve64x64HardWithProductEncoding(b *testing.B) {
@@ -144,18 +142,18 @@ func BenchmarkSolve64x64WithProductEncoding(b *testing.B) {
 //	input := string(bytes)
 //	b.ResetTimer()
 //	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "product")
+//		cnfOneLiner(input, "product")
 //	}
 //}
-//
-//func BenchmarkSolve81x81(b *testing.B) {
-//	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
-//	input := string(bytes)
-//	b.ResetTimer()
-//	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
-//	}
-//}
+
+func BenchmarkSolve81x81(b *testing.B) {
+	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
+	input := string(bytes)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		solveOneLiner(input, "normal")
+	}
+}
 func BenchmarkSolve81x81WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-81-1.txt")
 	input := string(bytes)
@@ -166,14 +164,14 @@ func BenchmarkSolve81x81WithProductEncoding(b *testing.B) {
 }
 
 //
-//func BenchmarkSolve100x100(b *testing.B) {
-//	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
-//	input := string(bytes)
-//	b.ResetTimer()
-//	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
-//	}
-//}
+func BenchmarkSolve100x100(b *testing.B) {
+	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
+	input := string(bytes)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		solveOneLiner(input, "normal")
+	}
+}
 func BenchmarkSolve100x100WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-100-1.txt")
 	input := string(bytes)
@@ -184,14 +182,14 @@ func BenchmarkSolve100x100WithProductEncoding(b *testing.B) {
 }
 
 //
-//func BenchmarkSolve144x144(b *testing.B) {
-//	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
-//	input := string(bytes)
-//	b.ResetTimer()
-//	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
-//	}
-//}
+func BenchmarkSolve144x144(b *testing.B) {
+	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
+	input := string(bytes)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		solveOneLiner(input, "normal")
+	}
+}
 func BenchmarkSolve144x144WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-144-1.txt")
 	input := string(bytes)
@@ -202,14 +200,14 @@ func BenchmarkSolve144x144WithProductEncoding(b *testing.B) {
 }
 
 //
-//func BenchmarkSolve225x225(b *testing.B) {
-//	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
-//	input := string(bytes)
-//	b.ResetTimer()
-//	for i := 0; i < b.N; i++ {
-//		solveOneLiner(input, "normal")
-//	}
-//}
+func BenchmarkSolve225x225(b *testing.B) {
+	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
+	input := string(bytes)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		solveOneLiner(input, "normal")
+	}
+}
 func BenchmarkSolve225x225WithProductEncoding(b *testing.B) {
 	bytes, _ := ioutil.ReadFile("../data/sudoku-225-2.txt")
 	input := string(bytes)
@@ -222,19 +220,19 @@ func BenchmarkSolve225x225WithProductEncoding(b *testing.B) {
 //
 //func BenchmarkSolveWithCadicalAiEscargot(b *testing.B) {
 //	for i := 0; i < b.N; i++ {
-//		customSolveOneLiner(aiEscargot[0], CUSTOM_SOLVER)
+//		customSolveOneLiner(aiEscargot1[0], CUSTOM_SOLVER)
 //	}
 //}
 //
 //func BenchmarkSolveWithCadicalHard9x9(b *testing.B) {
 //	for i := 0; i < b.N; i++ {
-//		customSolveOneLiner(hard1[0], CUSTOM_SOLVER)
+//		customSolveOneLiner(hard11[0], CUSTOM_SOLVER)
 //	}
 //}
 //
 //func BenchmarkSolveWithCadicalHard17clue(b *testing.B) {
 //	for i := 0; i < b.N; i++ {
-//		customSolveOneLiner(hard17clue[0], CUSTOM_SOLVER)
+//		customSolveOneLiner(hard17clue1[0], CUSTOM_SOLVER)
 //	}
 //}
 //

@@ -3,6 +3,11 @@ package sudokusolver
 import (
 	"bufio"
 	"fmt"
+	"github.com/crillab/gophersat/explain"
+	"github.com/crillab/gophersat/solver"
+	"github.com/irifrance/gini"
+	"github.com/irifrance/gini/z"
+	"github.com/rkkautsar/sudoku-solver/sudoku"
 	"io"
 	"log"
 	"os/exec"
@@ -10,24 +15,35 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/crillab/gophersat/explain"
-	"github.com/crillab/gophersat/solver"
-	"github.com/irifrance/gini"
-	"github.com/irifrance/gini/z"
-	"github.com/rkkautsar/sudoku-solver/sudoku"
 )
 
 func SolveWithGini(board *sudoku.Board, algorithm string) {
-	log.Println("sdadassdadsa")
 	board.BasicSolve()
+	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
+	log.Printf("Var length %d", cnf.varLen())
+	log.Printf("Clauses length %d", cnf.clauseLen())
 	start := time.Now()
 	giniAddConstraints(g, cnf.getClauses())
-	giniSolve(g, board)
+	//giniSolve(g, board)
 	elapsed := time.Since(start)
 	log.Printf("Adding Clauses and Solving took %s", elapsed)
+
+}
+
+func GetInfo(board *sudoku.Board, algorithm string) {
+	//board.BasicSolve()
+	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
+	//g := gini.New()
+	cnf := GenerateCNFConstraints(board, algorithm)
+	log.Printf("Var length %d", cnf.varLen())
+	log.Printf("Clauses length %d", cnf.clauseLen())
+	//start := time.Now()
+	//giniAddConstraints(g, cnf.getClauses())
+	////giniSolve(g, board)
+	//elapsed := time.Since(start)
+	//log.Printf("Adding Clauses and Solving took %s", elapsed)
 
 }
 

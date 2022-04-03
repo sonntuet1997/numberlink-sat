@@ -66,7 +66,6 @@ func New(size int) *Board {
 
 func (b *Board) SetValue(row, col, val int) {
 	blkIndex := b.blkIdxMap[b.Idx(row, col)]
-
 	b.Lookup[b.Idx(row, col)] = val
 	b.rowCandidateCount[row*b.Size2+val-1] = 1
 	b.colCandidateCount[col*b.Size2+val-1] = 1
@@ -95,6 +94,18 @@ func (b *Board) SetValue(row, col, val int) {
 			}
 		}
 	}
+}
+
+func (b *Board) GetUnresolvedCells() int {
+	result := 0
+	for r := 0; r < b.Size2; r++ {
+		for c := 0; c < b.Size2; c++ {
+			if b.Lookup[b.Idx(r, c)] == 0 {
+				result++
+			}
+		}
+	}
+	return result
 }
 
 func (b *Board) SetValueFalse(row, col, val int) {

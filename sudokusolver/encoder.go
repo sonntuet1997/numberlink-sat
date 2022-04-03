@@ -47,9 +47,6 @@ func GenerateCNFConstraints(board *sudoku.Board, algorithm string) CNFInterface 
 	buildCNFRangeConstraints(cnf, exactly1)
 	elapsed := time.Since(start)
 	log.Printf("Generating Clauses took %s", elapsed)
-	log.Printf("Clauses: %d", cnf.clauseLen())
-	log.Printf("Variables: %d", cnf.varLen())
-
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Rows(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Columns(), cnfExactly1)
 	// buildCNFRangeConstraints2(cnf, cnf.getBoard().Blocks(), cnfExactly1)

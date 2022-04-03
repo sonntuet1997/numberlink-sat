@@ -7,6 +7,10 @@ install: build
 test: sudoku sudokusolver
 	go test -cover ./...
 
+test-cnf: sudoku sudokusolver
+	go test -cover -v ./sudokusolver/cnf_test.go
+
+
 bench: sudokusolver
 	go test -timeout=4h -run=XXX -benchmem -bench=. ./sudokusolver
 
