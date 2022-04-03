@@ -26,7 +26,7 @@ func SolveWithGini(board *sudoku.Board, algorithm string) {
 	log.Printf("Clauses length %d", cnf.clauseLen())
 	start := time.Now()
 	giniAddConstraints(g, cnf.getClauses())
-	//giniSolve(g, board)
+	giniSolve(g, board)
 	elapsed := time.Since(start)
 	log.Printf("Adding Clauses and Solving took %s", elapsed)
 
@@ -84,11 +84,18 @@ func SolveWithCustomSolver(board *sudoku.Board, solver, algorithm string) {
 
 	cmd.Start()
 	defer cmd.Wait()
+
 	board.BasicSolve()
+	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	cnf := GenerateCNFConstraints(board, algorithm)
+	log.Printf("Var length %d", cnf.varLen())
+	log.Printf("Clauses length %d", cnf.clauseLen())
+	start := time.Now()
 	cnf.Print(writer)
 	writer.Flush()
 	stdin.Close()
+	elapsed := time.Since(start)
+	log.Printf("Adding Clauses and Solving took %s", elapsed)
 
 	model := make([]bool, board.NumCandidates)
 
