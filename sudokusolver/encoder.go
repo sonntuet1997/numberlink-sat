@@ -66,6 +66,10 @@ func (c *CNFParallel) initializeLits() {
 	c.CNF.initializeLits()
 }
 
+// Size2 = 4: kích thước 1 chiều sudoku
+// Lookup[]: Lưu giá trị đã điền của từng ô
+// Nếu b.CLit(r, c, v) trả về index tương ứng của ô đó trong mảng lưu các biến đã compressed.
+// Nếu b.CLit(r, c, v) == 0 thì loại bỏ để làm giảm số biến, mệnh đề.
 func buildCNFCellConstraints(cnf CNFInterface, builder CNFBuilder) {
 	b := cnf.getBoard()
 	idx := 0

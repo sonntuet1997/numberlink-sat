@@ -37,7 +37,6 @@ func cnfExactly1Product(c CNFInterface, lits []int) [][]int {
 		c.addLit(lits[0])
 		return [][]int{}
 	}
-
 	return append(cnfAtMost1Product(c, lits), cnfAtLeast1(c, lits)...)
 }
 
@@ -156,15 +155,14 @@ func cnfAtMost1Product(c CNFInterface, lits []int) [][]int {
 	column := int(math.Ceil(float64(n) / float64(row)))
 	result := make([][]int, 0, _factor(row)+_factor(column)+n*2)
 	rowVars := c.requestLiterals(row)
+
 	// r1 ->  -r2 ^ r1 -> -r3...
 	for i := 0; i < row; i++ {
 		for j := i + 1; j < row; j++ {
 			result = append(result, []int{-rowVars[i], -rowVars[j]})
 		}
 	}
-
 	colVars := c.requestLiterals(column)
-
 	// c1 ->  -c2 ^ c1 -> -c3...
 	for i := 0; i < column; i++ {
 		for j := i + 1; j < column; j++ {
@@ -172,7 +170,7 @@ func cnfAtMost1Product(c CNFInterface, lits []int) [][]int {
 		}
 	}
 
-	// c1 ->  -c2 ^ c1 -> -c3...
+	// x1 -> (c1, r1), x2 -> (c1,r2) ....
 	for i := 0; i < row; i++ {
 		for j := 0; j < column; j++ {
 			if i*column+j >= len(lits) {

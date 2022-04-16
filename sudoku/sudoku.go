@@ -1,6 +1,7 @@
 package sudoku
 
 import (
+	"fmt"
 	"math"
 )
 
@@ -121,6 +122,7 @@ func (b *Board) SetValueFalse(row, col, val int) {
 	}
 }
 
+// Lặp cho đến khi không tìm được thêm giá trị nào có thể điển
 func (b *Board) BasicSolve() {
 	restart := true
 	for restart {
@@ -208,6 +210,17 @@ func (b *Board) HiddenSingles() bool {
 	return restart
 }
 
+// Xijk <=> b.Candidates = [0,0,0,0,   0,1,0,0,   0,0,0,0,     1,0,0,0,
+//                          0,0,0,0,   0,0,0,0,   0,0,0,0,     0,0,0,0,
+//                          0,0,0,0,   0,0,0,0,   0,0,0,0,     0,0,0,0,
+//                          0,0,0,1,   0,0,0,0,   0,1,0,0,     0,0,0,0]
+// Xijk <=> b.Candidates = [false false false true false  |  false true false false |  false false true true | true false false false
+//          (thừa phần tử đầu)    true false true  false  |  true false true true   |   false false true true| false true true true
+//                                 true true true false   |   true false true false |   true false true true | false false true true
+//                                 false false false true |  true false true false  |   false true false false| false false true false]
+// b.NumCandidates: Số lượng Xijk chưa được điền
+// Thực hiện giảm số biến bằng cách lọc các phần tử bằng false. thực hiện ghi lại các vị trí bằng true trong candidate vào cLit_lit
+// b.lit_cLit = [0 3 6 11 12 13 17 19 21 23 24 27 28 30 31 32 33 34 35 37 39 41 43 44 47 48 52 53 55 58 63] (bỏ phần tử đầu)
 func (b *Board) InitCompressedLits() {
 	b.lit_cLit = make([]int, len(b.Candidates)+1)
 	b.cLit_lit = make([]int, b.NumCandidates+1)
@@ -227,20 +240,15 @@ func (b *Board) InitCompressedLits() {
 // }
 
 // from model of compressed lits
+// Xem phần tử nào == true thì thực hiện tìm ra vị trí thật của nó:
+// lit := b.cLit_lit[i+1]
+// Cập nhật kết quả vào mảng Lookup
 func (b *Board) SolveWithModel(model []bool) {
-	// for i := 1; i < len(b.Candidates); i++ {
-	//   if !model[i-1] {
-	//     continue
-	//   }
-	//   lit := b.cLit_lit[i]
-	//   b.Lookup[(lit-1)/b.Size2] = 1 + (lit-1)%b.Size2
-	// }
 	for i := 0; i < min(len(model), len(b.cLit_lit)-1); i++ {
 		if !model[i] {
 			continue
 		}
 		lit := b.cLit_lit[i+1]
-		// log.Println(i+1, lit, (lit-1)/b.Size2, 1+(lit-1)%b.Size2)
 		b.Lookup[(lit-1)/b.Size2] = 1 + (lit-1)%b.Size2
 	}
 }

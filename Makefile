@@ -13,7 +13,7 @@ test-cnf: sudoku sudokusolver
 
 bench: sudokusolver
 	go test -timeout=4h -run=XXX -benchmem -bench=. ./sudokusolver
-
+	
 benchprofile: sudokusolver
 	go test -run=XXX -benchmem -cpu-profile=./cpu.prof -mem-profile=./mem.prof -bench=. ./sudokusolver
 
