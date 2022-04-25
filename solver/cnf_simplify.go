@@ -1,4 +1,4 @@
-package sudokusolver
+package solver
 
 import (
 	"log"

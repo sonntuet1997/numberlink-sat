@@ -1,4 +1,4 @@
-package sudoku
+package numberlink
 
 import (
 	"testing"

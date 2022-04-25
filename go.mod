@@ -1,4 +1,4 @@
-module github.com/rkkautsar/sudoku-solver
+module github.com/sonntuet1997/numberlink-sat
 
 go 1.15
 

@@ -1,4 +1,4 @@
-package sudokusolver_test
+package solver_test
 
 import (
 	"bytes"
@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rkkautsar/sudoku-solver/sudoku"
-	"github.com/rkkautsar/sudoku-solver/sudokusolver"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
+	"github.com/sonntuet1997/numberlink-sat/solver"
 )
 
 const CUSTOM_SOLVER = "cadical -q"
@@ -318,17 +318,17 @@ func BenchmarkSolve225x225WithProductEncoding(b *testing.B) {
 //}
 
 func solveOneLiner(input, algorithm string) string {
-	board := sudoku.NewFromString(input)
-	// sudokusolver.Solve(board)
-	sudokusolver.SolveWithGini(board, algorithm)
+	board := numberlink.NewFromString(input)
+	// solver.Solve(board)
+	solver.SolveWithGini(board, algorithm)
 	var b bytes.Buffer
 	board.PrintOneLine(&b)
 	return strings.TrimSpace(b.String())
 }
 
 func customSolveOneLiner(input, solver, algorithm string) string {
-	board := sudoku.NewFromString(input)
-	sudokusolver.SolveWithCustomSolver(board, solver, algorithm)
+	board := numberlink.NewFromString(input)
+	solver.SolveWithCustomSolver(board, solver, algorithm)
 	var b bytes.Buffer
 	board.PrintOneLine(&b)
 	return strings.TrimSpace(b.String())
@@ -340,10 +340,10 @@ func customSolveOneLiner(input, solver, algorithm string) string {
 //
 //func solveManyWithGophersat(inputFile string) {
 //	file, _ := os.Open(inputFile)
-//	sudokusolver.SolveManyGophersat(file, ioutil.Discard)
+//	solver.SolveManyGophersat(file, ioutil.Discard)
 //}
 //
 //func solveManyWithGini(inputFile string) {
 //	file, _ := os.Open(inputFile)
-//	sudokusolver.SolveManyGini(file, ioutil.Discard)
+//	solver.SolveManyGini(file, ioutil.Discard)
 //}

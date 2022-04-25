@@ -1,4 +1,4 @@
-package sudokusolver
+package solver
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"github.com/crillab/gophersat/solver"
 	"github.com/irifrance/gini"
 	"github.com/irifrance/gini/z"
-	"github.com/rkkautsar/sudoku-solver/sudoku"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
 	"io"
 	"log"
 	"os/exec"
@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-func SolveWithGini(board *sudoku.Board, algorithm string) {
+func SolveWithGini(board *numberlink.Board, algorithm string) {
 	board.BasicSolve()
 	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	g := gini.New()
@@ -32,7 +32,7 @@ func SolveWithGini(board *sudoku.Board, algorithm string) {
 
 }
 
-func GetInfo(board *sudoku.Board, algorithm string) {
+func GetInfo(board *numberlink.Board, algorithm string) {
 	//board.BasicSolve()
 	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	//g := gini.New()
@@ -58,7 +58,7 @@ func giniAddConstraints(g *gini.Gini, clauses [][]int) {
 	}
 }
 
-func giniSolve(g *gini.Gini, board *sudoku.Board) {
+func giniSolve(g *gini.Gini, board *numberlink.Board) {
 	// g.Write(os.Stdout)
 	status := g.Solve()
 
@@ -74,7 +74,7 @@ func giniSolve(g *gini.Gini, board *sudoku.Board) {
 	board.SolveWithModel(model)
 }
 
-func SolveWithCustomSolver(board *sudoku.Board, solver, algorithm string) {
+func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
 	solverArgs := strings.Split(solver, " ")
 	cmd := exec.Command(solverArgs[0], solverArgs[1:]...)
 	stdin, _ := cmd.StdinPipe()
@@ -161,7 +161,7 @@ func SolveManyGini(in io.Reader, out io.Writer, algorithm string) {
 	// board := base.Board
 
 	// giniSolve(g, board)
-	board := sudoku.New(3)
+	board := numberlink.New(3)
 
 	// actLits := make([]z.Lit, 0, 81)
 

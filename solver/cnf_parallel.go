@@ -1,11 +1,11 @@
-package sudokusolver
+package solver
 
 import (
 	"io"
 	"sync"
 	"sync/atomic"
 
-	"github.com/rkkautsar/sudoku-solver/sudoku"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
 )
 
 type CNFParallel struct {
@@ -47,7 +47,7 @@ func (c *CNFParallel) setInitialNbVar(nbVar int) {
 	c.CNF.setInitialNbVar(nbVar)
 }
 
-func (c *CNFParallel) getBoard() *sudoku.Board {
+func (c *CNFParallel) getBoard() *numberlink.Board {
 	return c.CNF.getBoard()
 }
 

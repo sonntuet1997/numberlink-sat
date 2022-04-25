@@ -1,4 +1,4 @@
-package sudokusolver_test
+package solver_test
 
 //
 //import (
@@ -9,7 +9,7 @@ package sudokusolver_test
 //	"testing"
 //
 //	"github.com/rkkautsar/sudoku-solver/sudoku"
-//	"github.com/rkkautsar/sudoku-solver/sudokusolver"
+//	"github.com/rkkautsar/sudoku-solver/solver"
 //)
 //
 //const CUSTOM_SOLVER = "cadical -q"
@@ -320,8 +320,8 @@ package sudokusolver_test
 //
 //func solveOneLiner(input, algorithm string) string {
 //	board := sudoku.NewFromString(input)
-//	// sudokusolver.Solve(board)
-//	sudokusolver.SolveWithGini(board, algorithm)
+//	// solver.Solve(board)
+//	solver.SolveWithGini(board, algorithm)
 //	var b bytes.Buffer
 //	board.PrintOneLine(&b)
 //	return strings.TrimSpace(b.String())
@@ -329,7 +329,7 @@ package sudokusolver_test
 //
 //func customSolveOneLiner(input, solver, algorithm string) string {
 //	board := sudoku.NewFromString(input)
-//	sudokusolver.SolveWithCustomSolver(board, solver, algorithm)
+//	solver.SolveWithCustomSolver(board, solver, algorithm)
 //	var b bytes.Buffer
 //	board.PrintOneLine(&b)
 //	return strings.TrimSpace(b.String())
@@ -341,10 +341,10 @@ package sudokusolver_test
 ////
 ////func solveManyWithGophersat(inputFile string) {
 ////	file, _ := os.Open(inputFile)
-////	sudokusolver.SolveManyGophersat(file, ioutil.Discard)
+////	solver.SolveManyGophersat(file, ioutil.Discard)
 ////}
 ////
 ////func solveManyWithGini(inputFile string) {
 ////	file, _ := os.Open(inputFile)
-////	sudokusolver.SolveManyGini(file, ioutil.Discard)
+////	solver.SolveManyGini(file, ioutil.Discard)
 ////}

@@ -1,34 +1,34 @@
-build: cmd sudoku sudokusolver
-	go build -o ./bin/sudokusolver ./cmd/sudokusolver
+build: cmd numberlink solver
+	go build -o ./bin/numberlinksolver ./cmd/solver
 
 install: build
 	go install ./...
 
-test: sudoku sudokusolver
+test: numberlink solver
 	go test -cover ./...
 
-test-cnf: sudoku sudokusolver
-	go test -cover -v ./sudokusolver/cnf_test.go
+test-cnf: numberlink solver
+	go test -cover -v ./solver/cnf_test.go
 
 
-bench: sudokusolver
-	go test -timeout=4h -run=XXX -benchmem -bench=. ./sudokusolver
+bench: solver
+	go test -timeout=4h -run=XXX -benchmem -bench=. ./solver
 	
-benchprofile: sudokusolver
-	go test -run=XXX -benchmem -cpu-profile=./cpu.prof -mem-profile=./mem.prof -bench=. ./sudokusolver
+benchprofile: solver
+	go test -run=XXX -benchmem -cpu-profile=./cpu.prof -mem-profile=./mem.prof -bench=. ./solver
 
 profile: build
-	./bin/sudokusolver -cpu-profile=cpu.prof -mem-profile=mem.prof ${ARGS}
+	./bin/numberlinksolver -cpu-profile=cpu.prof -mem-profile=mem.prof ${ARGS}
 
 help:
-	go run ./cmd/sudokusolver/main.go -help
+	go run ./cmd/solver/main.go -help
 	
 run:
-	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS}
+	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS}
 	
 run-product:
-	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -algorithm=product
+	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -algorithm=product
 cnf:
-	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true ${ARGS}
+	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true ${ARGS}
 cnf-product:
-	go run ./cmd/sudokusolver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true -algorithm=product
+	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true -algorithm=product

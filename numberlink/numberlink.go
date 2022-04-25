@@ -1,7 +1,6 @@
-package sudoku
+package numberlink
 
 import (
-	"fmt"
 	"math"
 )
 

@@ -1,12 +1,12 @@
-package sudokusolver
+package solver
 
 import (
-	"github.com/rkkautsar/sudoku-solver/sudoku"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
 	"log"
 	"time"
 )
 
-func GenerateCNFConstraints(board *sudoku.Board, algorithm string) CNFInterface {
+func GenerateCNFConstraints(board *numberlink.Board, algorithm string) CNFInterface {
 	var cnf CNFInterface
 
 	board.InitCompressedLits()

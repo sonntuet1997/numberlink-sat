@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"runtime/pprof"
 
-	"github.com/rkkautsar/sudoku-solver/sudoku"
-	"github.com/rkkautsar/sudoku-solver/sudokusolver"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
+	"github.com/sonntuet1997/numberlink-sat/solver"
 )
 
 var (
@@ -54,8 +54,8 @@ func main() {
 	//}
 
 	//if isManyMode {
-	//	// sudokusolver.SolveManyGophersat(os.Stdin, os.Stdout)
-	//	sudokusolver.SolveManyGini(os.Stdin, os.Stdout)
+	//	// solver.SolveManyGophersat(os.Stdin, os.Stdout)
+	//	solver.SolveManyGini(os.Stdin, os.Stdout)
 	//} else {
 	bytes, _ := ioutil.ReadAll(os.Stdin)
 	input := string(bytes)
@@ -81,10 +81,10 @@ func main() {
 }
 
 func solve(mode, algorithm, input string) {
-	board := sudoku.NewFromString(input)
+	board := numberlink.NewFromString(input)
 
 	if mode == "cnf" {
-		cnf := sudokusolver.GenerateCNFConstraints(board, algorithm)
+		cnf := solver.GenerateCNFConstraints(board, algorithm)
 		writer := bufio.NewWriter(os.Stdout)
 		cnf.Print(writer)
 		err := writer.Flush()
@@ -95,7 +95,7 @@ func solve(mode, algorithm, input string) {
 	}
 
 	if mode == "solve" {
-		sudokusolver.SolveWithGini(board, algorithm)
+		solver.SolveWithGini(board, algorithm)
 	}
 
 	board.Print(os.Stdout)

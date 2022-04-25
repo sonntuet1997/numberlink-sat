@@ -73,19 +73,19 @@ curl -sf https://gobinaries.com/rkkautsar/sudoku-solver/cmd/sudokusolver | sh
 #### From source
 
 ```sh
-go get github.com/rkkautsar/sudoku-solver/cmd/sudokusolver
+go get github.com/rkkautsar/sudoku-solver/cmd/solver
 ```
 
 ### Executing program
 
 ```sh
-sudokusolver -help
-sudokusolver -cnf < data/sudoku-9-1.txt
-sudokusolver -solve < data/sudoku-9-1.txt
-sudokusolver -solve -many < data/sudoku.many.17clue.txt
+solver -help
+solver -cnf < data/sudoku-9-1.txt
+solver -solve < data/sudoku-9-1.txt
+solver -solve -many < data/sudoku.many.17clue.txt
 
 # brew install cadical
-sudokusolver -solver "cadical -q" < data/sudoku-9-1.txt
+solver -solver "cadical -q" < data/sudoku-9-1.txt
 ```
 
 ## License

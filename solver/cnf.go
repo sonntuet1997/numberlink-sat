@@ -1,10 +1,10 @@
-package sudokusolver
+package solver
 
 import (
 	"fmt"
 	"io"
 
-	"github.com/rkkautsar/sudoku-solver/sudoku"
+	"github.com/sonntuet1997/numberlink-sat/numberlink"
 )
 
 type CNFInterface interface {
@@ -16,7 +16,7 @@ type CNFInterface interface {
 	lookupTrue(lit int) bool
 	requestLiterals(num int) []int
 	setInitialNbVar(int)
-	getBoard() *sudoku.Board
+	getBoard() *numberlink.Board
 	getLits() []int
 	getClauses() [][]int
 	clauseLen() int
@@ -27,7 +27,7 @@ type CNFInterface interface {
 
 type CNF struct {
 	CNFInterface
-	Board     *sudoku.Board
+	Board     *numberlink.Board
 	Clauses   [][]int
 	lits      []int
 	litLookup []uint8
@@ -104,7 +104,7 @@ func (c *CNF) addFormula(lits []int, builder CNFBuilder) {
 	c.addClauses(formula)
 }
 
-func (c *CNF) getBoard() *sudoku.Board {
+func (c *CNF) getBoard() *numberlink.Board {
 	return c.Board
 }
 
