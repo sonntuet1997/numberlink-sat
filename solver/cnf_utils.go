@@ -23,22 +23,7 @@ func cnfExactly1(c CNFInterface, lits []int) [][]int {
 	return append(cnfAtMost1(c, lits), cnfAtLeast1(c, lits)...)
 }
 
-func cnfAtMost2of3(c CNFInterface, lits []int) [][]int {
-	result := make([][]int, 0)
-	for i := 0; i < len(lits); i++ {
-		clause := []int{}
-		for j := 0; j < len(lits); j++ {
-			if i == j {
-				clause = append(clause, lits[j])
-				continue
-			}
-			clause = append(clause, lits[j])
-		}
-		result = append(result, clause)
-	}
-	return result
-}
-func cnfAtMost2of4(c CNFInterface, lits []int) [][]int {
+func cnfAtMost2(c CNFInterface, lits []int) [][]int {
 	result := make([][]int, 0)
 	for i := 0; i < len(lits); i++ {
 		clause := []int{}
@@ -71,17 +56,11 @@ func cnfAtLeast2(c CNFInterface, lits []int) [][]int {
 	return result
 }
 
-func cnfExactly2of3(c CNFInterface, lits []int) [][]int {
+func cnfExactly2(c CNFInterface, lits []int) [][]int {
 	if len(lits) < 2 {
 		panic("less than 2")
 	}
-	return append(cnfAtMost2of3(c, lits), cnfAtLeast2(c, lits)...)
-}
-func cnfExactly2of4(c CNFInterface, lits []int) [][]int {
-	if len(lits) < 2 {
-		panic("less than 2")
-	}
-	return append(cnfAtMost2of4(c, lits), cnfAtLeast2(c, lits)...)
+	return append(cnfAtMost2(c, lits), cnfAtLeast2(c, lits)...)
 }
 
 func cnfExactly1Product(c CNFInterface, lits []int) [][]int {

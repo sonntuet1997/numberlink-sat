@@ -30,7 +30,7 @@ func GenerateCNFConstraints(board *numberlink.Board, algorithm string) CNFInterf
 		cnf.(*CNFParallel).initWorkers()
 	}
 	exactly1 := cnfExactly1
-	exactly2 := cnfExactly2of4
+	exactly2 := cnfExactly2
 	atLeast1 := cnfAtLeast1
 	//atMost1 := cnfAtMost1
 	if algorithm == "product" {
@@ -42,18 +42,18 @@ func GenerateCNFConstraints(board *numberlink.Board, algorithm string) CNFInterf
 
 	// log.Println("here", cnf.clauseLen())
 	start := time.Now()
-	testExactly2(cnf, exactly2)
-	//initializeClauses(cnf) // Tested
-	////buildCNFAtLeast1Direction(cnf, atLeast1)
-	//buildCNFExact1ValuePerCell(cnf, exactly1) // Tested
-	//buildCNFDirectionForNumberedCornerCell(cnf, exactly1) // Tested
-	//buildCNFDirectionForNumberedBorderCell(cnf, exactly1) // Tested
-	//buildCNFDirectionForNumberedInnerCell(cnf, exactly1) // Tested
-	//buildCNFDirectionForUnNumberedCornerCell(cnf, atLeast1) // Tested
+	//testExactly2(cnf,exactly2)
+	initializeClauses(cnf) // Tested
+	buildCNFAtLeast1Direction(cnf, atLeast1)
+	buildCNFExact1ValuePerCell(cnf, exactly1)               // Tested
+	buildCNFDirectionForNumberedCornerCell(cnf, exactly1)   // Tested
+	buildCNFDirectionForNumberedBorderCell(cnf, exactly1)   // Tested
+	buildCNFDirectionForNumberedInnerCell(cnf, exactly1)    // Tested
+	buildCNFDirectionForUnNumberedCornerCell(cnf, atLeast1) // Tested
 	//buildCNFDirectionForUnNumberedBorderCell(cnf, exactly2) // Tested
-	////buildCNFDirectionForUnNumberedBorderCell2(cnf, exactly1)
-	//buildCNFDirectionForUnNumberedInnerCell(cnf, exactly2) // Tested
-	//buildCNFConnectedValue(cnf, nil)
+	buildCNFDirectionForUnNumberedBorderCell2(cnf, exactly1)
+	buildCNFDirectionForUnNumberedInnerCell(cnf, exactly2) // Tested
+	buildCNFConnectedValue(cnf, nil)
 	fmt.Printf("sadsad%v\n", cnf.getClauses())
 	elapsed := time.Since(start)
 	log.Printf("Generating Clauses took %s", elapsed)
@@ -99,10 +99,6 @@ func buildCNFExact1ValuePerCell(cnf CNFInterface, builder CNFBuilder) {
 	idx := 0
 	for r := 0; r < b.Row; r++ {
 		for c := 0; c < b.Column; c++ {
-			//if b.Lookup[idx] != 0 {
-			//	idx++
-			//	continue
-			//}
 			idx++
 			lits := make([]int, b.MaxValue)
 			for v := 1; v <= b.MaxValue; v++ {
@@ -120,8 +116,8 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		lits[0] = b.XLit(0, 0, "Down")
 		lits[1] = b.XLit(0, 0, "Right")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(0, 0, "Up")})
-		cnf.addClause([]int{-b.XLit(0, 0, "Left")})
+		//cnf.addClause([]int{-b.XLit(0, 0, "Up")})
+		//cnf.addClause([]int{-b.XLit(0, 0, "Left")})
 	}
 	// Up right
 	if b.Lookup[b.Column-1] != 0 {
@@ -129,8 +125,8 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		lits[0] = b.XLit(0, b.Column-1, "Down")
 		lits[1] = b.XLit(0, b.Column-1, "Left")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(0, b.Column-1, "Up")})
-		cnf.addClause([]int{-b.XLit(0, b.Column-1, "Right")})
+		//cnf.addClause([]int{-b.XLit(0, b.Column-1, "Up")})
+		//cnf.addClause([]int{-b.XLit(0, b.Column-1, "Right")})
 	}
 
 	// Bottom left
@@ -139,8 +135,8 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		lits[0] = b.XLit(b.Row-1, 0, "Up")
 		lits[1] = b.XLit(b.Row-1, 0, "Right")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Down")})
-		cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Left")})
+		//cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Down")})
+		//cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Left")})
 	}
 
 	// Bottom right
@@ -149,8 +145,8 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		lits[0] = b.XLit(b.Row-1, b.Column-1, "Up")
 		lits[1] = b.XLit(b.Row-1, b.Column-1, "Left")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(b.Row-1, b.Column-1, "Down")})
-		cnf.addClause([]int{-b.XLit(b.Row-1, b.Column-1, "Right")})
+		//cnf.addClause([]int{-b.XLit(b.Row-1, b.Column-1, "Down")})
+		//cnf.addClause([]int{-b.XLit(b.Row-1, b.Column-1, "Right")})
 	}
 }
 func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuilder) {
@@ -163,11 +159,11 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		lits = make([]int, 1)
 		lits[0] = b.XLit(0, 0, "Right")
 		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(0, 0, "Up")
-		cnf.addFormula(filterZero(lits), builder)
-		lits[0] = -b.XLit(0, 0, "Left")
-		cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(0, 0, "Up")
+		//cnf.addFormula(filterZero(lits), builder)
+		//lits[0] = -b.XLit(0, 0, "Left")
+		//cnf.addFormula(filterZero(lits), builder)
 	}
 	// Up right
 	if b.Lookup[b.Column-1] == 0 {
@@ -177,12 +173,12 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		lits = make([]int, 1)
 		lits[0] = b.XLit(0, b.Column-1, "Left")
 		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(0, b.Column-1, "Up")
-		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(0, b.Column-1, "Right")
-		cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(0, b.Column-1, "Up")
+		//cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(0, b.Column-1, "Right")
+		//cnf.addFormula(filterZero(lits), builder)
 
 	}
 
@@ -194,12 +190,12 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		lits = make([]int, 1)
 		lits[0] = b.XLit(b.Row-1, 0, "Right")
 		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(b.Row-1, 0, "Left")
-		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(b.Row-1, 0, "Down")
-		cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(b.Row-1, 0, "Left")
+		//cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(b.Row-1, 0, "Down")
+		//cnf.addFormula(filterZero(lits), builder)
 	}
 
 	// Bottom right
@@ -210,12 +206,12 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		lits = make([]int, 1)
 		lits[0] = b.XLit(b.Row-1, b.Column-1, "Left")
 		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(b.Row-1, b.Column-1, "Right")
-		cnf.addFormula(filterZero(lits), builder)
-		lits = make([]int, 1)
-		lits[0] = -b.XLit(b.Row-1, b.Column-1, "Down")
-		cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(b.Row-1, b.Column-1, "Right")
+		//cnf.addFormula(filterZero(lits), builder)
+		//lits = make([]int, 1)
+		//lits[0] = -b.XLit(b.Row-1, b.Column-1, "Down")
+		//cnf.addFormula(filterZero(lits), builder)
 	}
 }
 func buildCNFDirectionForNumberedBorderCell(cnf CNFInterface, builder CNFBuilder) {
@@ -289,7 +285,7 @@ func buildCNFDirectionForUnNumberedBorderCell(cnf CNFInterface, builder CNFBuild
 		lits[1] = b.XLit(b.Row-1, c, "Left")
 		lits[2] = b.XLit(b.Row-1, c, "Up")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(b.Row-1, c, "Down")})
+		//cnf.addClause([]int{-b.XLit(b.Row-1, c, "Down")})
 	}
 	// Left
 	for r := 1; r < b.Row-1; r++ {
@@ -301,7 +297,7 @@ func buildCNFDirectionForUnNumberedBorderCell(cnf CNFInterface, builder CNFBuild
 		lits[1] = b.XLit(r, 0, "Right")
 		lits[2] = b.XLit(r, 0, "Down")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(r, 0, "Left")})
+		//cnf.addClause([]int{-b.XLit(r, 0, "Left")})
 	}
 	// Right
 	for r := 1; r < b.Row-1; r++ {
@@ -313,7 +309,7 @@ func buildCNFDirectionForUnNumberedBorderCell(cnf CNFInterface, builder CNFBuild
 		lits[1] = b.XLit(r, b.Column-1, "Left")
 		lits[2] = b.XLit(r, b.Column-1, "Down")
 		cnf.addFormula(filterZero(lits), builder)
-		cnf.addClause([]int{-b.XLit(r, b.Column-1, "Right")})
+		//cnf.addClause([]int{-b.XLit(r, b.Column-1, "Right")})
 	}
 }
 
@@ -350,10 +346,12 @@ func buildCNFDirectionForUnNumberedInnerCell(cnf CNFInterface, builder CNFBuilde
 	}
 }
 func testExactly2(cnf CNFInterface, builder CNFBuilder) {
-	cnf.addClause([]int{1})
-	cnf.addClause([]int{2})
-	cnf.addClause([]int{3})
-	cnf.addClause([]int{4})
+	cnf.addClause([]int{-1})
+	cnf.addClause([]int{-2})
+	cnf.addClause([]int{-3})
+	cnf.addClause([]int{-4})
+	cnf.addClause([]int{-1, -2, -3, -4})
+	cnf.addClause([]int{1, 2, 3, 4})
 	cnf.addFormula([]int{1, 2, 3, 4}, builder)
 }
 func buildCNFDirectionForUnNumberedBorderCell2(cnf CNFInterface, builder CNFBuilder) {
