@@ -31,9 +31,11 @@ FROM base as builder
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN make build
+RUN make build-server
+
+
 FROM alpine as release
 WORKDIR /app
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
-COPY --from=builder /app/bin/numberlinksolver /usr/bin/server
+COPY --from=builder /app/bin/server /usr/bin/server
 ENTRYPOINT ["/usr/bin/server"]

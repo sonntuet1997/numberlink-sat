@@ -9,25 +9,23 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      - apiserivce-db
-    command:
-      - /bin/sh
-      - -c
-      - |
-        air
+      target: release
+#    command:
+#      - /bin/sh
+#      - -c
+#      - |
+#        air
     networks:
       - numberlink
 
-  registry-tunnel:
+  api-tunnel:
     image: kroniak/ssh-client
     restart: "always"
     command:
       - /bin/bash
       - -c
       - |
-        ssh -oStrictHostKeyChecking=no -p 22222 -R api.numberlink:80:numberlink-service:80 uetbc.xyz auto-close=true
+        ssh -oStrictHostKeyChecking=no -p 22222 -R api.numberlink.uetbc.xyz:80:numberlink-service:80 uetbc.xyz auto-close=true
     networks:
       - numberlink
 
