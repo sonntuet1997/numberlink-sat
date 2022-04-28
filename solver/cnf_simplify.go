@@ -1,9 +1,5 @@
 package solver
 
-import (
-	"log"
-)
-
 type SimplifyOptions struct {
 	disablePureLiteralElimination bool
 }
@@ -14,7 +10,7 @@ func (c *CNF) Simplify(options SimplifyOptions) {
 	posCount := make([]int, c.nbVar)
 	negCount := make([]int, c.nbVar)
 	// grow litLookup
-	c.litLookup = append(c.litLookup, make([]uint8, int(c.nbVar)-len(c.litLookup))...)
+	//c.litLookup = append(c.litLookup, make([]uint8, int(c.nbVar)-len(c.litLookup))...)
 
 	pure := 0
 	for i, clause := range c.Clauses {
@@ -36,7 +32,7 @@ func (c *CNF) Simplify(options SimplifyOptions) {
 		}
 	}
 
-	queue := make([]int, 0, len(c.lits))
+	queue := make([]int, 0, 0)
 
 	if !options.disablePureLiteralElimination {
 		for i := 1; i <= int(c.nbVar); i++ {
@@ -47,11 +43,11 @@ func (c *CNF) Simplify(options SimplifyOptions) {
 			neg := negCount[i-1]
 			if pos == 0 && neg > 0 {
 				// log.Println("pure", -i)
-				c.addLit(-i)
+				//c.addLit(-i)
 				pure++
 			} else if pos > 0 && neg == 0 {
 				// log.Println("pure", i)
-				c.addLit(i)
+				//c.addLit(i)
 				pure++
 			}
 		}
@@ -60,7 +56,7 @@ func (c *CNF) Simplify(options SimplifyOptions) {
 	// log.Println("Eliminating", pure, "pure literals")
 
 	// log.Println("adding", c.lits)
-	queue = append(queue, c.lits...)
+	//queue = append(queue, c.lits...)
 
 	c.propagateAll(queue)
 	// lenBefore := len(c.Clauses)
@@ -125,19 +121,19 @@ func (c *CNF) propagate(queue []int, lit int) {
 			// replaced
 			continue
 		}
-
-		// has to be satisfied by 0th lit
-		if c.litLookup[getLitLookupIdx(clause[0])] != unassigned {
-			log.Println(c.lits)
-			log.Println(clause, "has to be satisfied by", clause[0], "but it's", c.litLookup[getLitLookupIdx(clause[0])])
-			for _, l := range clause {
-				log.Println("litLookup", l, c.litLookup[getLitLookupIdx(l)])
-			}
-			panic("UNSAT")
-		}
+		//
+		//// has to be satisfied by 0th lit
+		//if c.litLookup[getLitLookupIdx(clause[0])] != unassigned {
+		//	log.Println(c.lits)
+		//	log.Println(clause, "has to be satisfied by", clause[0], "but it's", c.litLookup[getLitLookupIdx(clause[0])])
+		//	for _, l := range clause {
+		//		log.Println("litLookup", l, c.litLookup[getLitLookupIdx(l)])
+		//	}
+		//	panic("UNSAT")
+		//}
 
 		// log.Println("adding", clause[0])
-		c.addLit(clause[0])
+		//c.addLit(clause[0])
 		queue = append(queue, clause[0])
 	}
 	c.watchers[negLit] = c.watchers[negLit][:0]

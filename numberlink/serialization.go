@@ -6,6 +6,7 @@ import (
 	"io"
 	"math"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -23,39 +24,23 @@ func NewFromString(input string) *Board {
 	input = SPACE_REGEX.ReplaceAllString(input, " ")
 	input = strings.ReplaceAll(input, ".", "0")
 
-	// standard 9x9 single row
-	if strings.Index(input, "\n") == -1 {
-		return NewFromSingleRowString(input)
-	}
+	stringArr := strings.Split(input, "\n")
+	info := stringArr[0]
+	infoArr := strings.Split(info, " ")
+	column, _ := strconv.Atoi(infoArr[0])
+	row, _ := strconv.Atoi(infoArr[1])
 
-	r := bufio.NewReader(strings.NewReader(input))
+	cells := make([][]int, row)
+	r := bufio.NewReader(strings.NewReader(strings.Join(stringArr[1:], "\n")))
 
-	rows := strings.Split(input, "\n")
-	size2 := len(rows)
-	cells := make([][]int, size2)
-
-	for i := 0; i < size2; i++ {
-		cells[i] = make([]int, size2)
-		for j := 0; j < size2; j++ {
+	for i := 0; i < row; i++ {
+		cells[i] = make([]int, column)
+		for j := 0; j < column; j++ {
 			fmt.Fscan(r, &cells[i][j])
 		}
 	}
 
 	return NewFromArray(cells)
-}
-
-func NewFromSingleRowString(input string) *Board {
-	size2 := 9
-	size := 3
-	board := New(size)
-
-	for i, c := range input {
-		if c != '0' && c != '.' {
-			board.SetValue(i/size2, i%size2, int(c-'0'))
-		}
-	}
-
-	return board
 }
 
 func (b *Board) ReplaceWithSingleRowString(input string, skipCandidateElimination bool) {
@@ -89,32 +74,37 @@ func (b *Board) ReplaceWithSingleRowString(input string, skipCandidateEliminatio
 }
 
 func NewFromArray(cells [][]int) *Board {
-	size2 := len(cells)
-	size := getSize(size2)
-	board := New(size)
-
+	row := len(cells)
+	column := len(cells[0])
+	maxValue := 1
+	for _, row := range cells {
+		for _, val := range row {
+			if val > maxValue {
+				maxValue = val
+			}
+		}
+	}
+	board := New(row, column, maxValue)
 	for r, row := range cells {
 		for c, val := range row {
-			if val < 1 || val > size2 {
+			if val < 1 {
 				continue
 			}
 			board.SetValue(r, c, val)
 		}
 	}
-
 	return board
 }
 
 func (s *Board) Print(w io.Writer) {
-	charLen := int(math.Floor(math.Log10(float64(s.Size2 * s.Size2))))
+	charLen := int(math.Floor(math.Log10(float64(s.Row * s.Column * (s.MaxValue + s.TotalMove)))))
 	formatter := fmt.Sprintf("%%s%%%dd%%s", charLen)
-
-	for r := 0; r < s.Size2; r++ {
+	for r := 0; r < s.Row; r++ {
 		fmt.Fprintf(w, formatter, "", s.Lookup[s.Idx(r, 0)], "")
-		for c := 1; c < s.Size2-1; c++ {
+		for c := 1; c < s.Column-1; c++ {
 			fmt.Fprintf(w, formatter, " ", s.Lookup[s.Idx(r, c)], "")
 		}
-		fmt.Fprintf(w, formatter, " ", s.Lookup[s.Idx(r, s.Size2-1)], "\n")
+		fmt.Fprintf(w, formatter, " ", s.Lookup[s.Idx(r, s.Column-1)], "\n")
 	}
 }
 

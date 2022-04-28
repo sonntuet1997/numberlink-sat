@@ -7,34 +7,86 @@ func cnfAtLeast1(c CNFInterface, lits []int) [][]int {
 }
 
 func cnfAtMost1(c CNFInterface, lits []int) [][]int {
-	return _cnfAtMost1(c, lits, false)
+	return _cnfAtMost1(c, lits)
 }
 
-func _cnfAtMost1(c CNFInterface, lits []int, pairwise bool) [][]int {
-	//if pairwise || len(lits) <= 5 {
-	//	return cnfAtMost1Pairwise(c, lits)
-	//}
-	//
-	//if len(lits) <= 10 {
-	//	return cnfAtMost1Commander(c, lits)
-	//}
+func _cnfAtMost1(c CNFInterface, lits []int) [][]int {
 	return cnfAtMost1Pairwise(c, lits)
-
-	//return cnfAtMost1Bimander(c, lits)
 }
 
 func cnfExactly1(c CNFInterface, lits []int) [][]int {
 	if len(lits) == 1 {
-		c.addLit(lits[0])
+		c.addClause(lits)
 		return [][]int{}
 	}
 
 	return append(cnfAtMost1(c, lits), cnfAtLeast1(c, lits)...)
 }
 
+func cnfAtMost2of3(c CNFInterface, lits []int) [][]int {
+	result := make([][]int, 0)
+	for i := 0; i < len(lits); i++ {
+		clause := []int{}
+		for j := 0; j < len(lits); j++ {
+			if i == j {
+				clause = append(clause, lits[j])
+				continue
+			}
+			clause = append(clause, lits[j])
+		}
+		result = append(result, clause)
+	}
+	return result
+}
+func cnfAtMost2of4(c CNFInterface, lits []int) [][]int {
+	result := make([][]int, 0)
+	for i := 0; i < len(lits); i++ {
+		clause := []int{}
+		for j := 0; j < len(lits); j++ {
+			if i == j {
+				clause = append(clause, lits[j])
+				continue
+			}
+			clause = append(clause, -lits[j])
+		}
+		result = append(result, clause)
+	}
+	return result
+}
+
+func cnfAtLeast2(c CNFInterface, lits []int) [][]int {
+	n := len(lits)
+	result := make([][]int, 0)
+	for i := 0; i < n; i++ {
+		clause := []int{}
+		for j := 0; j < n; j++ {
+			if i == j {
+				clause = append(clause, -lits[j])
+				continue
+			}
+			clause = append(clause, lits[j])
+		}
+		result = append(result, clause)
+	}
+	return result
+}
+
+func cnfExactly2of3(c CNFInterface, lits []int) [][]int {
+	if len(lits) < 2 {
+		panic("less than 2")
+	}
+	return append(cnfAtMost2of3(c, lits), cnfAtLeast2(c, lits)...)
+}
+func cnfExactly2of4(c CNFInterface, lits []int) [][]int {
+	if len(lits) < 2 {
+		panic("less than 2")
+	}
+	return append(cnfAtMost2of4(c, lits), cnfAtLeast2(c, lits)...)
+}
+
 func cnfExactly1Product(c CNFInterface, lits []int) [][]int {
 	if len(lits) == 1 {
-		c.addLit(lits[0])
+		c.addClause(lits)
 		return [][]int{}
 	}
 	return append(cnfAtMost1Product(c, lits), cnfAtLeast1(c, lits)...)
@@ -59,7 +111,7 @@ const COMMANDER_FACTOR = 3
 func cnfAtMost1Commander(c CNFInterface, lits []int) [][]int {
 	n := len(lits)
 	if n <= 3 {
-		return _cnfAtMost1(c, lits, true)
+		return _cnfAtMost1(c, lits)
 	}
 	m := (n + COMMANDER_FACTOR - 1) / COMMANDER_FACTOR
 
@@ -71,7 +123,7 @@ func cnfAtMost1Commander(c CNFInterface, lits []int) [][]int {
 	for i := 0; i < m; i++ {
 		groups[i] = lits[groupLen*i : min(groupLen*(i+1), n)]
 		// 1. At most one variable in a group can be true
-		result = append(result, _cnfAtMost1(c, groups[i], true)...)
+		result = append(result, _cnfAtMost1(c, groups[i])...)
 	}
 
 	commanders := c.requestLiterals(m)
@@ -105,7 +157,7 @@ func cnfAtMost1Bimander(c CNFInterface, lits []int) [][]int {
 	groups := make([][]int, m)
 	for i := 0; i < m; i++ {
 		groups[i] = lits[groupLen*i : min(groupLen*(i+1), n)]
-		result = append(result, _cnfAtMost1(c, groups[i], true)...)
+		result = append(result, _cnfAtMost1(c, groups[i])...)
 	}
 
 	auxVars := c.requestLiterals(binLength)

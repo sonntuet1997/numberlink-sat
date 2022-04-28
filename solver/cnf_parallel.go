@@ -27,9 +27,9 @@ func (c *CNFParallel) lookupTrue(lit int) bool {
 	return c.CNF.lookupTrue(lit)
 }
 
-func (c *CNFParallel) addLit(lit int) {
-	c.CNF.addLit(lit)
-}
+//func (c *CNFParallel) addLit(lit int) {
+//	c.CNF.addLit(lit)
+//}
 
 func (c *CNFParallel) addClause(clause []int) {
 	c.clauseChan <- [][]int{clause}
@@ -51,9 +51,9 @@ func (c *CNFParallel) getBoard() *numberlink.Board {
 	return c.CNF.getBoard()
 }
 
-func (c *CNFParallel) getLits() []int {
-	return c.CNF.getLits()
-}
+//func (c *CNFParallel) getLits() []int {
+//	return c.CNF.getLits()
+//}
 func (c *CNFParallel) varLen() int {
 	return int(c.nbVar)
 }

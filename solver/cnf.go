@@ -8,16 +8,16 @@ import (
 )
 
 type CNFInterface interface {
-	addLit(lit int)
+	//addLit(lit int)
 	addClause(clause []int)
 	addClauses(clauses [][]int)
 	addFormula(lits []int, builder CNFBuilder)
-	initializeLits()
+	//initializeLits()
 	lookupTrue(lit int) bool
 	requestLiterals(num int) []int
 	setInitialNbVar(int)
 	getBoard() *numberlink.Board
-	getLits() []int
+	//getLits() []int
 	getClauses() [][]int
 	clauseLen() int
 	varLen() int
@@ -27,10 +27,10 @@ type CNFInterface interface {
 
 type CNF struct {
 	CNFInterface
-	Board     *numberlink.Board
-	Clauses   [][]int
-	lits      []int
-	litLookup []uint8
+	Board   *numberlink.Board
+	Clauses [][]int
+	//lits      []int
+	//litLookup []uint8
 	watchers  [][]int
 	lookupLen int
 	nbVar     int32
@@ -48,33 +48,34 @@ func (c *CNF) clauseLen() int {
 	return len(c.Clauses)
 }
 
-func (c *CNF) addLit(lit int) {
-	c.lits = append(c.lits, lit)
-	idx := getLitLookupIdx(lit)
-	if idx >= len(c.litLookup) {
-		return
-	}
-
-	if lit < 0 {
-		c.litLookup[idx] = assignedFalse
-	} else {
-		c.litLookup[idx] = assignedTrue
-	}
-}
-
-func (c *CNF) lookupTrue(lit int) bool {
-	idx := getLitLookupIdx(lit)
-	if idx >= len(c.litLookup) {
-		// log.Println("lookup out of bound", lit, len(c.litLookup))
-		return false
-	}
-
-	if lit < 0 {
-		return c.litLookup[idx] == assignedFalse
-
-	}
-	return c.litLookup[idx] == assignedTrue
-}
+//
+//func (c *CNF) addLit(lit int) {
+//	c.lits = append(c.lits, lit)
+//	idx := getLitLookupIdx(lit)
+//	if idx >= len(c.litLookup) {
+//		return
+//	}
+//
+//	if lit < 0 {
+//		c.litLookup[idx] = assignedFalse
+//	} else {
+//		c.litLookup[idx] = assignedTrue
+//	}
+//}
+//
+//func (c *CNF) lookupTrue(lit int) bool {
+//	idx := getLitLookupIdx(lit)
+//	if idx >= len(c.litLookup) {
+//		// log.Println("lookup out of bound", lit, len(c.litLookup))
+//		return false
+//	}
+//
+//	if lit < 0 {
+//		return c.litLookup[idx] == assignedFalse
+//
+//	}
+//	return c.litLookup[idx] == assignedTrue
+//}
 
 func (c *CNF) requestLiterals(num int) []int {
 	lits := makeRange(int(c.nbVar)+1, int(c.nbVar)+num)
@@ -108,17 +109,17 @@ func (c *CNF) getBoard() *numberlink.Board {
 	return c.Board
 }
 
-func (c *CNF) getLits() []int {
-	return c.lits
-}
+//func (c *CNF) getLits() []int {
+//	return c.lits
+//}
 
 func (c *CNF) getClauses() [][]int {
-	clauses := make([][]int, 0, len(c.Clauses)+len(c.lits))
-	for i := 0; i < len(c.lits); i++ {
-		clauses = append(clauses, c.lits[i:i+1])
-	}
-	clauses = append(clauses, c.Clauses...)
-	return clauses
+	//clauses := make([][]int, 0, len(c.Clauses)+len(c.lits))
+	//for i := 0; i < len(c.lits); i++ {
+	//	clauses = append(clauses, c.lits[i:i+1])
+	//}
+	//clauses = append(clauses, c.Clauses...)
+	return c.Clauses
 }
 
 func (c *CNF) Print(w io.Writer) {
@@ -132,19 +133,18 @@ func (c *CNF) Print(w io.Writer) {
 	}
 }
 
-func (c *CNF) initializeLits() {
-	b := c.getBoard()
-	c.lits = make([]int, 0, len(b.Candidates)-b.NumCandidates)
-	for i := 0; i < len(b.Lookup); i++ {
-		if b.Lookup[i] != 0 {
-			c.addLit(b.CLit(i/b.Size2, i%b.Size2, b.Lookup[i]))
-		}
-	}
-}
-
-func getLitLookupIdx(lit int) int {
-	if lit < 0 {
-		return -lit - 1
-	}
-	return lit - 1
-}
+//
+//func (c *CNF) initializeLits() {
+//	b := c.getBoard()
+//	c.lits = make([]int, 0, b.NumCandidates)
+//  for i := 1; i < b.NumCandidates; i++ {
+//    c.addLit(i)
+//  }
+//}
+//
+//func getLitLookupIdx(lit int) int {
+//	if lit < 0 {
+//		return -lit - 1
+//	}
+//	return lit - 1
+//}

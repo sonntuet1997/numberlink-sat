@@ -49,19 +49,9 @@ func main() {
 	if isCNFMode {
 		mode = "cnf"
 	}
-	//if !isCNFMode && customSolver != "gophersat" {
-	//	mode = "custom"
-	//}
-
-	//if isManyMode {
-	//	// solver.SolveManyGophersat(os.Stdin, os.Stdout)
-	//	solver.SolveManyGini(os.Stdin, os.Stdout)
-	//} else {
 	bytes, _ := ioutil.ReadAll(os.Stdin)
 	input := string(bytes)
 	solve(mode, algorithm, input)
-	//}
-
 	if memProfile != "" {
 		f, err := os.Create(memProfile)
 		if err != nil {

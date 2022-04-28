@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"github.com/crillab/gophersat/explain"
 	"github.com/crillab/gophersat/solver"
-	"github.com/irifrance/gini"
-	"github.com/irifrance/gini/z"
+	"github.com/go-air/gini"
+	"github.com/go-air/gini/z"
 	"github.com/sonntuet1997/numberlink-sat/numberlink"
-	"io"
 	"log"
 	"os/exec"
 	"sort"
@@ -18,8 +17,7 @@ import (
 )
 
 func SolveWithGini(board *numberlink.Board, algorithm string) {
-	board.BasicSolve()
-	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
+	//log.Printf("Unresolved cells %d", board.GetUnesolvedCells())
 	g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
 	log.Printf("Var length %d", cnf.varLen())
@@ -34,7 +32,7 @@ func SolveWithGini(board *numberlink.Board, algorithm string) {
 
 func GetInfo(board *numberlink.Board, algorithm string) {
 	//board.BasicSolve()
-	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
+	//log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	//g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
 	log.Printf("Var length %d", cnf.varLen())
@@ -61,13 +59,13 @@ func giniAddConstraints(g *gini.Gini, clauses [][]int) {
 func giniSolve(g *gini.Gini, board *numberlink.Board) {
 	// g.Write(os.Stdout)
 	status := g.Solve()
-
 	if status < 0 {
-		ms := g.Why([]z.Lit{})
-		log.Println(ms)
+		ms := g.Why(nil)
+		log.Println("ms", ms)
 		panic("UNSAT")
 	}
 	model := make([]bool, board.NumCandidates)
+	println(len(model))
 	for i := 1; i <= len(model); i++ {
 		model[i-1] = g.Value(z.Dimacs2Lit(i))
 	}
@@ -85,8 +83,7 @@ func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
 	cmd.Start()
 	defer cmd.Wait()
 
-	board.BasicSolve()
-	log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
+	//log.Printf("Unresolved cells %d", board.GetUnresolvedCells())
 	cnf := GenerateCNFConstraints(board, algorithm)
 	log.Printf("Var length %d", cnf.varLen())
 	log.Printf("Clauses length %d", cnf.clauseLen())
@@ -148,74 +145,4 @@ func ExplainUnsat(pb *solver.Problem) {
 	sort.Sort(sort.StringSlice(lines[1:]))
 	musCnf = strings.Join(lines, "\n")
 	fmt.Println(musCnf)
-}
-
-func SolveManyGini(in io.Reader, out io.Writer, algorithm string) {
-	scanner := bufio.NewScanner(in)
-	writer := bufio.NewWriter(out)
-	// base := GetBase9x9Clauses()
-	// g := gini.New()
-	// log.Println("new")
-	// giniAddConstraints(g, base.getClauses())
-	// log.Println("constraints")
-	// board := base.Board
-
-	// giniSolve(g, board)
-	board := numberlink.New(3)
-
-	// actLits := make([]z.Lit, 0, 81)
-
-	for scanner.Scan() {
-		// log.Println("start")
-		input := scanner.Text()
-		board.ReplaceWithSingleRowString(input, true)
-		// board.BasicSolve()
-		// board.NumCandidates = 729
-		// // SolveWithGini(board)
-		// // cnf := &CNF{Board: board, nbVar: base.nbVar}
-		// actLits = actLits[:0]
-		// for r := 0; r < 9; r++ {
-		// 	for c := 0; c < 9; c++ {
-		// 		for v := 1; v <= 9; v++ {
-		// 			if board.Lookup[board.Idx(r, c)] == v {
-		// 				g.Add(z.Dimacs2Lit(board.Lit(r, c, v)))
-		// 				m := g.Activate()
-		// 				// fmt.Println("activation", i, m.Dimacs())
-		// 				actLits = append(actLits, m)
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// for i := 1; i <= 729; i++ {
-		// 	if board.Lookup[(i-1)/9] == ((i-1)%9)+1 {
-		// 		// log.Println("new:", i)
-		// 		g.Add(z.Dimacs2Lit(i))
-		// 		m := g.Activate()
-		// 		// fmt.Println("activation", i, m.Dimacs())
-		// 		actLits = append(actLits, m)
-		// 	}
-		// 	// else if !board.Candidates[i] {
-		// 	// 	// log.Println("new:", -i)
-		// 	// 	g.Add(z.Dimacs2Lit(-i))
-		// 	// 	m := g.Activate()
-		// 	// 	actLits = append(actLits, m)
-		// 	// 	// fmt.Println("activation", -i, m.Dimacs())
-		// 	// }
-		// }
-		// log.Println("assume")
-		// log.Println(actLits)
-		// g.Assume(actLits...)
-		// giniSolve(g, board)
-		// // log.Println("solve")
-		// board.PrintOneLine(writer)
-		// for _, m := range actLits {
-		// 	g.Deactivate(m)
-		// }
-		// log.Println("end")
-
-		board.ReplaceWithSingleRowString(input, false)
-		SolveWithGini(board, algorithm)
-		board.PrintOneLine(writer)
-	}
-	writer.Flush()
 }

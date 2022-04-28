@@ -326,9 +326,9 @@ func solveOneLiner(input, algorithm string) string {
 	return strings.TrimSpace(b.String())
 }
 
-func customSolveOneLiner(input, solver, algorithm string) string {
+func customSolveOneLiner(input, satSolver, algorithm string) string {
 	board := numberlink.NewFromString(input)
-	solver.SolveWithCustomSolver(board, solver, algorithm)
+	solver.SolveWithCustomSolver(board, satSolver, algorithm)
 	var b bytes.Buffer
 	board.PrintOneLine(&b)
 	return strings.TrimSpace(b.String())
