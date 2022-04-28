@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 
@@ -19,6 +20,8 @@ func init() {
 
 func main() {
 	router := gin.Default()
+	router.Use(cors.Default())
+
 	router.POST("/solve", func(c *gin.Context) {
 		var json Data
 		if err := c.ShouldBindJSON(&json); err != nil {
@@ -26,10 +29,10 @@ func main() {
 			return
 		}
 		board := numberlink.NewFromString(json.Data)
-		solver.SolveWithGini(board, "normal")
+		runtime := solver.SolveWithGini(board, "normal")
 		var buff bytes.Buffer
 		board.Print(&buff)
-		c.JSON(http.StatusOK, gin.H{"result": buff.String()})
+		c.JSON(http.StatusOK, gin.H{"result": buff.String(), "runtime": runtime})
 	})
 	err := router.Run(":80")
 	if err != nil {

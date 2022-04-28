@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func SolveWithGini(board *numberlink.Board, algorithm string) {
+func SolveWithGini(board *numberlink.Board, algorithm string) string {
 	//log.Printf("Unresolved cells %d", board.GetUnesolvedCells())
 	g := gini.New()
 	cnf := GenerateCNFConstraints(board, algorithm)
@@ -27,7 +27,7 @@ func SolveWithGini(board *numberlink.Board, algorithm string) {
 	giniSolve(g, board)
 	elapsed := time.Since(start)
 	log.Printf("Adding Clauses and Solving took %s", elapsed)
-
+	return strconv.FormatInt(elapsed.Nanoseconds(), 10)
 }
 
 func GetInfo(board *numberlink.Board, algorithm string) {
