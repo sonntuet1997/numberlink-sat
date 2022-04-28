@@ -1,5 +1,8 @@
 build: cmd numberlink solver
 	go build -o ./bin/numberlinksolver ./cmd/solver
+	
+build-server: cmd numberlink solver
+	go build -o ./bin/server ./src
 
 install: build
 	go install ./...
@@ -32,3 +35,5 @@ cnf:
 	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true ${ARGS}
 cnf-product:
 	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -cnf=true -algorithm=product
+
+

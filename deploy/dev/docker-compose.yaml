@@ -1,0 +1,33 @@
+version: "3.7"
+networks:
+  numberlink:
+    name: numberlink
+
+services:
+  numberlink-service:
+    restart: "always"
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: dev
+    depends_on:
+      - apiserivce-db
+    command:
+      - /bin/sh
+      - -c
+      - |
+        air
+    networks:
+      - numberlink
+
+  registry-tunnel:
+    image: kroniak/ssh-client
+    restart: "always"
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ssh -oStrictHostKeyChecking=no -p 22222 -R api.numberlink:80:numberlink-service:80 uetbc.xyz auto-close=true
+    networks:
+      - numberlink
+
