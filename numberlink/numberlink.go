@@ -1,7 +1,5 @@
 package numberlink
 
-import "fmt"
-
 var MoveType = map[string]int{
 	"Left":  1,
 	"Up":    2,
@@ -100,7 +98,7 @@ func (b *Board) SetValue(row, col, val int) {
 // }
 
 func (b *Board) SolveWithModel(model []bool) {
-	fmt.Printf("Model %v\n", model)
+	//fmt.Printf("Model %v\n", model)
 	for r := 0; r < b.Row; r++ {
 		for c := 0; c < b.Column; c++ {
 			if b.Lookup[r*b.Column+c] == 0 {
@@ -114,22 +112,22 @@ func (b *Board) SolveWithModel(model []bool) {
 		}
 	}
 
-	// Print
-	for r := 0; r < b.Row; r++ {
-		for c := 0; c < b.Column; c++ {
-			for v := 1; v <= b.MaxValue; v++ {
-				if model[b.YLit(r, c, v)-1] {
-					print(v, " ")
-				}
-			}
-			for k, _ := range MoveType {
-				if model[b.XLit(r, c, k)-1] {
-					print(k, "    ")
-				}
-			}
-		}
-		println()
-	}
+	//// Print
+	//for r := 0; r < b.Row; r++ {
+	//	for c := 0; c < b.Column; c++ {
+	//		for v := 1; v <= b.MaxValue; v++ {
+	//			if model[b.YLit(r, c, v)-1] {
+	//				print(v, " ")
+	//			}
+	//		}
+	//		for k, _ := range MoveType {
+	//			if model[b.XLit(r, c, k)-1] {
+	//				print(k, "    ")
+	//			}
+	//		}
+	//	}
+	//	println()
+	//}
 }
 
 func min(a, b int) int {

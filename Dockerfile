@@ -20,6 +20,14 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.5 && \
     chmod +x /bin/grpc_health_probe 
 WORKDIR /app
 
+FROM golang:1.17.2-alpine as cadical
+RUN apk add --no-cache ca-certificates git curl build-base g++ clang
+WORKDIR /app
+RUN git clone https://github.com/arminbiere/cadical
+RUN cd cadical && ./configure && make
+WORKDIR /app
+
+
 FROM base as dev
 RUN curl -fLo install.sh https://raw.githubusercontent.com/cosmtrek/air/master/install.sh \
     && chmod +x install.sh && sh install.sh && mv ./bin/air /bin/air
@@ -36,6 +44,8 @@ RUN make build-server
 
 FROM alpine as release
 WORKDIR /app
+RUN apk add g++ clang
+COPY --from=cadical /app/cadical/build/cadical /bin/cadical
 COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
 COPY --from=builder /app/bin/server /usr/bin/server
 ENTRYPOINT ["/usr/bin/server"]

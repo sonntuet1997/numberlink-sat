@@ -1,7 +1,6 @@
 package solver
 
 import (
-	"fmt"
 	"github.com/sonntuet1997/numberlink-sat/numberlink"
 	"log"
 	"time"
@@ -38,25 +37,25 @@ func GenerateCNFConstraints(board *numberlink.Board, algorithm string) CNFInterf
 		atLeast1 = cnfAtLeast1
 		//atMost1 = cnfAtMost1Product
 	}
-	fmt.Printf("%v%v%v\n", exactly1, exactly2, atLeast1)
+	//fmt.Printf("%v%v%v\n", exactly1, exactly2, atLeast1)
 
 	// log.Println("here", cnf.clauseLen())
 	start := time.Now()
 	//testExactly2(cnf,exactly2)
-	initializeClauses(cnf) // Tested
-	buildCNFAtLeast1Direction(cnf, atLeast1)
-	buildCNFExact1ValuePerCell(cnf, exactly1)               // Tested
-	buildCNFDirectionForNumberedCornerCell(cnf, exactly1)   // Tested
-	buildCNFDirectionForNumberedBorderCell(cnf, exactly1)   // Tested
-	buildCNFDirectionForNumberedInnerCell(cnf, exactly1)    // Tested
-	buildCNFDirectionForUnNumberedCornerCell(cnf, atLeast1) // Tested
-	//buildCNFDirectionForUnNumberedBorderCell(cnf, exactly2) // Tested
-	buildCNFDirectionForUnNumberedBorderCell2(cnf, exactly1)
-	buildCNFDirectionForUnNumberedInnerCell(cnf, exactly2) // Tested
-	buildCNFConnectedValue(cnf, nil)
-	fmt.Printf("sadsad%v\n", cnf.getClauses())
+	initializeClauses(cnf)                                   // Khởi tạo các ô Y(i,j,k) có giá trị đã biết
+	buildCNFAtLeast1Direction(cnf, atLeast1)                 // Một ô bất kỳ phải có ít nhất một hướng đi
+	buildCNFExact1ValuePerCell(cnf, exactly1)                // Mọi ô trên màn chơi đều phải được gắn với một nhãn giá trị duy nhất
+	buildCNFDirectionForNumberedCornerCell(cnf, exactly1)    // Mã hóa cho những ô có số ở góc
+	buildCNFDirectionForNumberedBorderCell(cnf, exactly1)    // Mã hóa cho những ô có số ở biên
+	buildCNFDirectionForNumberedInnerCell(cnf, exactly1)     // Mã hóa cho những ô có số ở bên trong
+	buildCNFDirectionForUnNumberedCornerCell(cnf, atLeast1)  // Mã hóa cho những ô không có số ở góc
+	buildCNFDirectionForUnNumberedBorderCell2(cnf, exactly1) // Mã hóa cho những ô không có số ở biên
+	buildCNFDirectionForUnNumberedInnerCell(cnf, exactly2)   // Mã hóa cho những ô không có số ở bên trong
+	buildCNFConnectedValue(cnf, nil)                         // Các ô được kết nối có nhãn giá trị giống nhau
+	//fmt.Printf("sadsad%v\n", cnf.getClauses())
 	elapsed := time.Since(start)
 	log.Printf("Generating Clauses took %s", elapsed)
+	//buildCNFDirectionForUnNumberedBorderCell(cnf, exactly2) // Mã hóa cho những ô không có số ở góc
 
 	if shouldUseParallel {
 		cnf.(*CNFParallel).closeAndWait()
@@ -70,7 +69,7 @@ func GenerateCNFConstraints(board *numberlink.Board, algorithm string) CNFInterf
 }
 
 func initializeClauses(cnf CNFInterface) {
-	b := cnf.getBoard()
+	b := cnf.getBoard() // Lấy dữ liệu đầu vào
 	for r := 0; r < b.Row; r++ {
 		for c := 0; c < b.Column; c++ {
 			v := b.Lookup[r*b.Column+c]
@@ -128,7 +127,6 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		cnf.addClause([]int{-b.XLit(0, b.Column-1, "Up")})
 		cnf.addClause([]int{-b.XLit(0, b.Column-1, "Right")})
 	}
-
 	// Bottom left
 	if b.Lookup[(b.Row-1)*b.Column] != 0 {
 		lits := make([]int, 2)
@@ -138,7 +136,6 @@ func buildCNFDirectionForNumberedCornerCell(cnf CNFInterface, builder CNFBuilder
 		cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Down")})
 		cnf.addClause([]int{-b.XLit(b.Row-1, 0, "Left")})
 	}
-
 	// Bottom right
 	if b.Lookup[b.Row*b.Column-1] != 0 {
 		lits := make([]int, 2)
@@ -182,7 +179,6 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		cnf.addFormula(filterZero(lits), builder)
 
 	}
-
 	// Bottom left
 	if b.Lookup[(b.Row-1)*b.Column] == 0 {
 		lits := make([]int, 1)
@@ -198,7 +194,6 @@ func buildCNFDirectionForUnNumberedCornerCell(cnf CNFInterface, builder CNFBuild
 		lits[0] = -b.XLit(b.Row-1, 0, "Down")
 		cnf.addFormula(filterZero(lits), builder)
 	}
-
 	// Bottom right
 	if b.Lookup[b.Row*b.Column-1] == 0 {
 		lits := make([]int, 1)
@@ -348,12 +343,12 @@ func buildCNFDirectionForUnNumberedInnerCell(cnf CNFInterface, builder CNFBuilde
 			if b.Lookup[b.Column*r+c] != 0 {
 				continue
 			}
-			println(r, " ", c)
+			//println(r, " ", c)
 			lits := make([]int, b.TotalMove)
 			for a, j := range numberlink.MoveType {
 				lits[j-1] = b.XLit(r, c, a)
 			}
-			fmt.Printf("%v\n", lits)
+			//fmt.Printf("%v\n", lits)
 			cnf.addFormula(filterZero(lits), builder)
 		}
 	}
@@ -423,7 +418,7 @@ func buildCNFConnectedValue(cnf CNFInterface, builder CNFBuilder) {
 	for r := 0; r < b.Row; r++ {
 		for c := 0; c < b.Column; c++ {
 			for v := 1; v <= b.MaxValue; v++ {
-				if c-1 >= 0 {
+				if c-1 >= 0 { // Constrain with the left cell
 					clause := make([]int, 3)
 					clause[0] = -b.YLit(r, c, v)
 					clause[1] = -b.XLit(r, c, "Left")
@@ -454,7 +449,7 @@ func buildCNFConnectedValue(cnf CNFInterface, builder CNFBuilder) {
 					clause[0] = -b.XLit(r, c+1, "Left")
 					clause[1] = b.XLit(r, c, "Right")
 					cnf.addClause(clause)
-				}
+				} // Constrain with the right cell
 				if r+1 < b.Row {
 					clause := make([]int, 3)
 					clause[0] = -b.YLit(r, c, v)
@@ -470,7 +465,7 @@ func buildCNFConnectedValue(cnf CNFInterface, builder CNFBuilder) {
 					clause[0] = -b.XLit(r+1, c, "Up")
 					clause[1] = b.XLit(r, c, "Down")
 					cnf.addClause(clause)
-				}
+				} // Constrain with the down cell
 				if r-1 >= 0 {
 					clause := make([]int, 3)
 					clause[0] = -b.YLit(r, c, v)
@@ -486,7 +481,7 @@ func buildCNFConnectedValue(cnf CNFInterface, builder CNFBuilder) {
 					clause[0] = -b.XLit(r-1, c, "Down")
 					clause[1] = b.XLit(r, c, "Up")
 					cnf.addClause(clause)
-				}
+				} // Constrain with the up cell
 			}
 		}
 	}

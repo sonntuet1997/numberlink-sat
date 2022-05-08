@@ -72,14 +72,13 @@ func giniSolve(g *gini.Gini, board *numberlink.Board) {
 	board.SolveWithModel(model)
 }
 
-func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
+func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) string {
 	solverArgs := strings.Split(solver, " ")
 	cmd := exec.Command(solverArgs[0], solverArgs[1:]...)
 	stdin, _ := cmd.StdinPipe()
 	stdout, _ := cmd.StdoutPipe()
 	reader := bufio.NewScanner(stdout)
 	writer := bufio.NewWriter(stdin)
-
 	cmd.Start()
 	defer cmd.Wait()
 
@@ -92,8 +91,6 @@ func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
 	writer.Flush()
 	stdin.Close()
 	elapsed := time.Since(start)
-	log.Printf("Adding Clauses and Solving took %s", elapsed)
-
 	model := make([]bool, board.NumCandidates)
 
 	for reader.Scan() {
@@ -101,7 +98,7 @@ func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
 
 		if strings.HasPrefix(line, "s UNSATISFIABLE") {
 			fmt.Println("UNSAT")
-			return
+			return "-1"
 		}
 
 		if len(line) < 1 || !strings.HasPrefix(line, "v") {
@@ -124,6 +121,9 @@ func SolveWithCustomSolver(board *numberlink.Board, solver, algorithm string) {
 	}
 
 	board.SolveWithModel(model)
+	log.Printf("Adding Clauses and Solving took %s", elapsed)
+	return strconv.FormatInt(elapsed.Nanoseconds(), 10)
+
 }
 
 func ExplainUnsat(pb *solver.Problem) {

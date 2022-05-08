@@ -29,7 +29,7 @@ func main() {
 			return
 		}
 		board := numberlink.NewFromString(json.Data)
-		runtime := solver.SolveWithGini(board, "normal")
+		runtime := solver.SolveWithCustomSolver(board, "cadical -q", "normal")
 		var buff bytes.Buffer
 		board.Print(&buff)
 		c.JSON(http.StatusOK, gin.H{"result": buff.String(), "runtime": runtime})

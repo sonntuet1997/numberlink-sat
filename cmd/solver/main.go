@@ -85,7 +85,8 @@ func solve(mode, algorithm, input string) {
 	}
 
 	if mode == "solve" {
-		solver.SolveWithGini(board, algorithm)
+		println("cadical")
+		solver.SolveWithCustomSolver(board, "cadical -q", algorithm)
 	}
 
 	board.Print(os.Stdout)

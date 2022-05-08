@@ -28,6 +28,9 @@ help:
 	
 run:
 	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS}
+
+run-cadical:
+	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof ${ARGS} -
 	
 run-product:
 	go run ./cmd/solver/main.go -cpu-profile=./logs/cpu.prof -mem-profile=./logs/mem.prof -algorithm=product
