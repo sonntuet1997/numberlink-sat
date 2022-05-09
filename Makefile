@@ -15,7 +15,7 @@ test-cnf: numberlink solver
 
 
 bench: solver
-	go test -timeout=4h -run=XXX -benchmem -bench=. ./solver
+	go test -timeout=4h -run=XXX -benchmem -bench=. ./solver/gini_solver_test.go
 	
 benchprofile: solver
 	go test -run=XXX -benchmem -cpu-profile=./cpu.prof -mem-profile=./mem.prof -bench=. ./solver

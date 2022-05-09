@@ -65,7 +65,6 @@ func giniSolve(g *gini.Gini, board *numberlink.Board) {
 		panic("UNSAT")
 	}
 	model := make([]bool, board.NumCandidates)
-	println(len(model))
 	for i := 1; i <= len(model); i++ {
 		model[i-1] = g.Value(z.Dimacs2Lit(i))
 	}
